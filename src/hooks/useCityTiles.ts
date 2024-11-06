@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Object3D } from "three";
 import { Tile, useCity } from "../contexts/city-context";
 import { useFrame } from "@react-three/fiber";
 import { createAssetInstance } from "../assets/assets";
@@ -16,6 +15,7 @@ export const useCityTiles = () => {
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
         const tile = createAssetInstance("grass", index, i, j);
+        tile.userData.id = undefined;
         objs.push({ terrainType: "grass", Object: tile });
 
         index++;
@@ -25,21 +25,21 @@ export const useCityTiles = () => {
     setData(objs);
   }, [size]);
 
-  useFrame(() => {
-    if (!data) return;
+  // useFrame(() => {
+  //   if (!data) return;
 
-    data.forEach((tile) => {
-      if (Math.random() < 0.001) {
-        if (tile.Object.userData.id == "grass") {
-          tile.Object.userData.id = buildingStage[0].name;
-        } else if (tile.Object.userData.id === buildingStage[0].name) {
-          tile.Object.userData.id = buildingStage[1].name;
-        } else {
-          tile.Object.userData.id = buildingStage[2].name;
-        }
-      }
-    });
-  });
+  //   data.forEach((tile) => {
+  //     if (Math.random() < 0.001) {
+  //       if (tile.Object.userData.id == "grass") {
+  //         tile.Object.userData.id = buildingStage[0].name;
+  //       } else if (tile.Object.userData.id === buildingStage[0].name) {
+  //         tile.Object.userData.id = buildingStage[1].name;
+  //       } else {
+  //         tile.Object.userData.id = buildingStage[2].name;
+  //       }
+  //     }
+  //   });
+  // });
 
   return data;
 };

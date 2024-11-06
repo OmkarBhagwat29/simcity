@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CityScene from "./CityScene";
 
 import {
+  AssetId,
   BuildingStage,
   CityProvider,
   Tile,
-  ToolType,
 } from "../contexts/city-context";
 import { Object3D, Raycaster } from "three";
 
 const Game = () => {
   const [tiles, setTileObjects] = useState<Tile[]>([]);
-  const [toolType, setToolType] = useState<ToolType>(null);
+  const [assetId, setAsset] = useState<AssetId>("none");
   const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
 
   const buildingStage: BuildingStage[] = [
@@ -39,9 +39,9 @@ const Game = () => {
           buildingStage,
           addBuildingObjects,
           raycaster: new Raycaster(),
-          toolType,
-          setToolType: (toolType) => {
-            setToolType(toolType);
+          assetId,
+          setAssetId: (toolType) => {
+            setAsset(toolType);
           },
         }}
       >

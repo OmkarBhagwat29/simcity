@@ -1,36 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../css/toolbar.css";
-import { useCity } from "../../contexts/city-context";
+import { AssetId, useCity } from "../../contexts/city-context";
 
+const selectedColor = "lightblue";
 const UIPanel = () => {
-  const { setToolType } = useCity();
-  const onBulldoze = (e) => {
-    setToolType("BULLDOZE");
-  };
+  const { setAssetId } = useCity();
 
-  const onResidential = (e) => {
-    setToolType("RESIDENTIAL");
-  };
+  const [activeButton, setActiveButton] = useState<string | null>(null);
 
-  const onCommercial = (e) => {
-    setToolType("COMMERCIAL");
-  };
-
-  const onIndustrial = (e) => {
-    setToolType("INDUSTRIAL");
-  };
-
-  const onRoad = (e) => {
-    setToolType("ROAD");
+  const handleButtonClick = (id: AssetId) => {
+    setAssetId(id);
+    setActiveButton(id.toString());
   };
 
   return (
     <div className="toolbar">
-      <button onClick={onBulldoze}>BULLDOZE</button>
-      <button onClick={onResidential}>RESIDENTIAL</button>
-      <button onClick={onCommercial}>COMMERCIAL</button>
-      <button onClick={onIndustrial}>INDUSTRIAL</button>
-      <button onClick={onRoad}>ROAD</button>
+      <button
+        onClick={() => handleButtonClick("bulldoze")}
+        style={{
+          backgroundColor:
+            activeButton === "bulldoze" ? selectedColor : "white",
+        }}
+      >
+        BULLDOZE
+      </button>
+      <button
+        onClick={() => handleButtonClick("residential")}
+        style={{
+          backgroundColor:
+            activeButton === "residential" ? selectedColor : "white",
+        }}
+      >
+        RESIDENTIAL
+      </button>
+      <button
+        onClick={() => handleButtonClick("commercial")}
+        style={{
+          backgroundColor:
+            activeButton === "commercial" ? selectedColor : "white",
+        }}
+      >
+        COMMERCIAL
+      </button>
+      <button
+        onClick={() => handleButtonClick("industrial")}
+        style={{
+          backgroundColor:
+            activeButton === "industrial" ? selectedColor : "white",
+        }}
+      >
+        INDUSTRIAL
+      </button>
+      <button
+        onClick={() => handleButtonClick("road")}
+        style={{
+          backgroundColor: activeButton === "road" ? selectedColor : "white",
+        }}
+      >
+        ROAD
+      </button>
     </div>
   );
 };

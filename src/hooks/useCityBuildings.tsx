@@ -31,15 +31,21 @@ export const useCityBuildings = () => {
         tempBuildings[index] = null;
       }
       //id is changed
-      if (newBuildingId !== currentBuildingId) {
-        scene.remove(tempBuildings[index]!);
-        tempBuildings[index] = createAssetInstance(
-          newBuildingId,
-          index,
-          pos.x,
-          pos.z
-        );
-        scene.add(tempBuildings[index]);
+      if (newBuildingId) {
+        if (
+          newBuildingId !== "bulldoze" &&
+          newBuildingId !== currentBuildingId
+        ) {
+          scene.remove(tempBuildings[index]!);
+
+          tempBuildings[index] = createAssetInstance(
+            newBuildingId,
+            index,
+            pos.x,
+            pos.z
+          );
+          scene.add(tempBuildings[index]);
+        }
       }
     });
   });

@@ -7,22 +7,30 @@ import CityBuildings from "./CityBuildings";
 import VisualiseObjects from "./VisualiseObjects";
 
 const City = () => {
-  const { raycaster, toolType, tiles } = useCity();
+  const { raycaster, assetId, tiles } = useCity();
   const { size, camera, scene } = useThree();
+
+  const onObjectSelected = (obj: Object3D) => {
+    // console.log(assetId);
+
+    const tile = tiles[obj.userData.tileIndex];
+
+    console.log("tile->", tile);
+
+    if (assetId === "bulldoze" && tile.Object.userData.id) {
+      console.log("object to delete ->", obj);
+
+      tile.Object.userData.id = undefined;
+      scene.remove(obj);
+
+      //console.log(tile.Object);
+    } else if (!tile.Object.userData.id) {
+      tile.Object.userData.id = assetId;
+    }
+  };
 
   useEffect(() => {
     let selectedObject: Object3D | null = null;
-
-    const onObjectSelected = (obj: Object3D) => {
-      console.log(toolType);
-      if (toolType === "BULLDOZE") {
-        const tile = tiles[obj.userData.tileIndex];
-        scene.remove(obj);
-
-        tile.Object.userData.id = "grass";
-        console.log(tile.Object);
-      }
-    };
 
     const onMouseDown = (e: MouseEvent) => {
       e.stopPropagation();
@@ -34,7 +42,7 @@ const City = () => {
       raycaster.setFromCamera(mouse, camera);
 
       const intersections = raycaster.intersectObjects(scene.children, false);
-      //console.log(intersections);
+
       if (selectedObject) {
         selectedObject.material.emissive.setHex(0);
       }
@@ -53,7 +61,7 @@ const City = () => {
       console.log("destroying");
       window.removeEventListener("mousedown", onMouseDown);
     };
-  }, [toolType]);
+  }, [assetId]);
 
   return (
     <>

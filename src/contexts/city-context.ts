@@ -11,13 +11,13 @@ export interface Tile {
   Object: Object3D;
 }
 
-export type ToolType =
-  | "BULLDOZE"
-  | "RESIDENTIAL"
-  | "COMMERCIAL"
-  | "INDUSTRIAL"
-  | "ROAD"
-  | null;
+export type AssetId =
+  | "grass"
+  | "residential"
+  | "commercial"
+  | "industrial"
+  | "road"
+  | "bulldoze";
 
 export type TerrainType = "grass" | "river";
 
@@ -29,8 +29,8 @@ interface CityContextProps {
   addTileObjects: (tiles: Tile[]) => void;
   addBuildingObjects: (obj: Object3D[]) => void;
   raycaster: Raycaster;
-  toolType: ToolType;
-  setToolType: (toolType: ToolType) => void;
+  assetId: AssetId;
+  setAssetId: (assetId: AssetId) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({
@@ -41,8 +41,8 @@ export const CityContext = createContext<CityContextProps>({
   addBuildingObjects: () => {},
   buildingStage: [],
   raycaster: new Raycaster(),
-  toolType: null,
-  setToolType: () => {},
+  assetId: "grass",
+  setAssetId: () => {},
 });
 
 export const useCity = () => {

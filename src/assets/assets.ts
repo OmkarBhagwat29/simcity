@@ -1,11 +1,11 @@
 import { BoxGeometry, Mesh, MeshLambertMaterial } from "three";
+import { AssetId } from "../contexts/city-context";
 
 const buildingGeom = new BoxGeometry(1, 1, 1);
 
 const grassGeom = new BoxGeometry(1, 1, 1);
 
 // Define a type for the asset keys
-type AssetId = "grass" | "stage-1" | "stage-2" | "stage-3";
 
 const assets: Record<
   AssetId,
@@ -23,31 +23,42 @@ const assets: Record<
     tile.userData.tileIndex = tileIndex;
     return tile;
   },
-  "stage-1": (tileIndex: number, x: number, y: number) => {
-    const buildingMaterial = new MeshLambertMaterial({ color: 0x2f4f4f });
+  residential: (tileIndex: number, x: number, y: number) => {
+    const buildingMaterial = new MeshLambertMaterial({ color: 0x00ff00 });
     const building = new Mesh(buildingGeom, buildingMaterial);
     building.position.set(x, 1 / 2, y);
-    building.userData.id = "stage-1";
+    building.userData.id = "residential";
     building.userData.tileIndex = tileIndex;
     return building;
   },
-  "stage-2": (tileIndex: number, x: number, y: number) => {
-    const buildingMaterial = new MeshLambertMaterial({ color: 0x2f4f4f });
+  commercial: (tileIndex: number, x: number, y: number) => {
+    const buildingMaterial = new MeshLambertMaterial({ color: 0x0000ff });
     const building = new Mesh(buildingGeom, buildingMaterial);
-    building.position.set(x, 2 / 2, y);
-    building.scale.set(1, 2, 1);
-    building.userData.id = "stage-2";
+    building.position.set(x, 0.5, y);
+    building.userData.id = "commercial";
     building.userData.tileIndex = tileIndex;
     return building;
   },
-  "stage-3": (tileIndex: number, x: number, y: number) => {
-    const buildingMaterial = new MeshLambertMaterial({ color: 0x2f4f4f });
+  industrial: (tileIndex: number, x: number, y: number) => {
+    const buildingMaterial = new MeshLambertMaterial({ color: 0xffff00 });
     const building = new Mesh(buildingGeom, buildingMaterial);
-    building.position.set(x, 3 / 2, y);
-    building.scale.set(1, 3, 1);
-    building.userData.id = "stage-3";
+    building.position.set(x, 0.5, y);
+    building.userData.id = "industrial";
     building.userData.tileIndex = tileIndex;
     return building;
+  },
+  road: (tileIndex: number, x: number, y: number) => {
+    const buildingMaterial = new MeshLambertMaterial({ color: 0x444440 });
+    const building = new Mesh(buildingGeom, buildingMaterial);
+    building.position.set(x, 0.05, y);
+    building.scale.set(1, 0.1, 1);
+    building.userData.id = "road";
+    building.userData.tileIndex = tileIndex;
+    return building;
+  },
+
+  bulldoze: (tileIndex: number, x: number, y: number) => {
+    return new Mesh();
   },
 };
 
