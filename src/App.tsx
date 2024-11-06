@@ -1,9 +1,9 @@
-import Scene from "./components/scene";
+import Game from "./components/game";
 
 function App() {
   return (
     <>
-      <Scene />
+      <Game />
     </>
   );
 }

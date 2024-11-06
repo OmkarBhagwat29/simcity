@@ -1,13 +1,38 @@
 import { createContext, useContext } from "react";
+import { Object3D, Raycaster } from "three";
+
+export interface BuildingStage {
+  name: string;
+  height: number;
+}
+
+export interface Tile {
+  terrainType: TerrainType;
+  Object: Object3D;
+}
+
+export type TerrainType = "grass" | "river";
 
 interface CityContextProps {
-  data: number[][];
-  addData: (x: number, y: number) => void;
+  size: number;
+  tiles: Tile[];
+  buildingObjects: Object3D[];
+  buildingStage: BuildingStage[];
+  addTileObjects: (tiles: Tile[]) => void;
+  addBuildingObjects: (obj: Object3D[]) => void;
+  raycaster: Raycaster;
+  onObjectSelected: (obj: Object3D) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({
-  data: [],
-  addData: (x: number, y: number) => {},
+  size: 0,
+  tiles: [],
+  addTileObjects: () => {},
+  buildingObjects: [],
+  addBuildingObjects: () => {},
+  buildingStage: [],
+  onObjectSelected: () => {},
+  raycaster: new Raycaster(),
 });
 
 export const useCity = () => {

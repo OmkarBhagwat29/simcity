@@ -1,19 +1,46 @@
-import React, { useState } from "react";
-import Scene from "./scene";
+import React, { useEffect, useState } from "react";
+import CityScene from "./CityScene";
 
-import City from "./city";
-import { CityProvider } from "../contexts/city-context";
+import { BuildingStage, CityProvider, Tile } from "../contexts/city-context";
+import { Object3D, Raycaster } from "three";
 
 const Game = () => {
-  const [cityData, setCityData] = useState<number[][]>([]);
+  const [tiles, setTileObjects] = useState<Tile[]>([]);
+  const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
 
-  const addCityData = (x: number, y: number) => {};
+  const buildingStage: BuildingStage[] = [
+    { name: "stage-1", height: 1 },
+    { name: "stage-2", height: 2 },
+    { name: "stage-3", height: 3 },
+  ];
+
+  const addTileObjects = (tiles: Tile[]) => {
+    setTileObjects((prv: Tile[]) => [...prv, ...tiles]);
+  };
+
+  const addBuildingObjects = (objs: Object3D[]) => {
+    setBuildingObjects((prv) => [...prv, ...objs]);
+  };
+
+  const onObjectSelected = (obj: Object3D) => {
+    console.log(obj.userData);
+  };
 
   return (
     <>
-      <Scene />
-      <CityProvider value={{ data: cityData, addData: addCityData }}>
-        <City />
+      <CityProvider
+        value={{
+          size: 16,
+          tiles,
+          addTileObjects,
+          buildingObjects,
+          buildingStage,
+          addBuildingObjects,
+          onObjectSelected,
+          raycaster: new Raycaster(),
+        }}
+      >
+        <CityScene />
       </CityProvider>
     </>
   );
