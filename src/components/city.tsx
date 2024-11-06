@@ -7,13 +7,25 @@ import CityBuildings from "./CityBuildings";
 import VisualiseObjects from "./VisualiseObjects";
 
 const City = () => {
-  const { raycaster, onObjectSelected } = useCity();
+  const { raycaster, toolType, tiles } = useCity();
   const { size, camera, scene } = useThree();
 
   useEffect(() => {
     let selectedObject: Object3D | null = null;
+
+    const onObjectSelected = (obj: Object3D) => {
+      console.log(toolType);
+      if (toolType === "BULLDOZE") {
+        const tile = tiles[obj.userData.tileIndex];
+        scene.remove(obj);
+
+        tile.Object.userData.id = "grass";
+        console.log(tile.Object);
+      }
+    };
+
     const onMouseDown = (e: MouseEvent) => {
-      //e.stopPropagation();
+      e.stopPropagation();
 
       const mouse = new Vector2();
       mouse.x = (e.clientX / size.width) * 2 - 1;
@@ -38,9 +50,10 @@ const City = () => {
     window.addEventListener("mousedown", onMouseDown);
 
     return () => {
+      console.log("destroying");
       window.removeEventListener("mousedown", onMouseDown);
     };
-  }, []);
+  }, [toolType]);
 
   return (
     <>

@@ -1,0 +1,14 @@
+.toolbar {
+  position: absolute;
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+  justify-content: top;
+  justify-items: center;
+  gap: 20px;
+  padding: 20px;
+  margin: 20px;
+  overflow: hidden;
+  user-select: none;
+  background-color: rgba(49, 47, 49, 0.678);
+}

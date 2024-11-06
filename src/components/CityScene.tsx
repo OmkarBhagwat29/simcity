@@ -9,6 +9,7 @@ import CityBuildings from "./CityBuildings";
 import { Perf } from "r3f-perf";
 import { Vector2 } from "three";
 import City from "./city";
+import UIPanel from "./ui/ui-panel";
 
 // Camera constants
 
@@ -24,6 +25,7 @@ const CityScene = () => {
   const { size } = useCity();
   return (
     <>
+      <UIPanel />
       <Canvas
         style={{ backgroundColor: "darkGray" }}
         camera={{
@@ -45,6 +47,7 @@ const CityScene = () => {
           panSpeed={PAN_SENSITIVITY}
           target={[size / 2, 0, size / 2]}
         />
+
         <City />
         {/* <axesHelper scale={15} /> */}
         <SetupLights />
