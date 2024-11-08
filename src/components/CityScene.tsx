@@ -14,7 +14,7 @@ import UIPanel from "./ui/ui-panel";
 // Camera constants
 
 const MIN_CAMERA_RADIUS = 0.1;
-const MAX_CAMERA_RADIUS = 25;
+const MAX_CAMERA_RADIUS = 35;
 const MIN_CAMERA_ELEVATION = Math.PI / 4; // 45 degrees in radians
 const MAX_CAMERA_ELEVATION = Math.PI / 4; // 45 degrees in radians
 const AZIMUTH_SENSITIVITY = 0.2;
@@ -27,6 +27,7 @@ const CityScene = () => {
     <>
       <UIPanel />
       <Canvas
+        shadows
         style={{ backgroundColor: "darkGray" }}
         camera={{
           fov: 45,

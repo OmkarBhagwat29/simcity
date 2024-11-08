@@ -1,38 +1,19 @@
-import { useThree } from "@react-three/fiber";
-import React, { useEffect } from "react";
-import { useCity } from "../contexts/city-context";
-import { Object3D, Vector2 } from "three";
 import CityTiles from "./cityTiles";
 import CityBuildings from "./CityBuildings";
 import VisualiseObjects from "./VisualiseObjects";
+import { useEffect } from "react";
+import { useThree } from "@react-three/fiber";
+import { Object3D, Vector2 } from "three";
+import { useCity } from "../contexts/city-context";
 
 const City = () => {
-  const { raycaster, assetId, tiles } = useCity();
   const { size, camera, scene } = useThree();
 
-  const onObjectSelected = (obj: Object3D) => {
-    // console.log(assetId);
-
-    const tile = tiles[obj.userData.tileIndex];
-
-    console.log("tile->", tile);
-
-    if (assetId === "bulldoze" && tile.Object.userData.id) {
-      console.log("object to delete ->", obj);
-
-      tile.Object.userData.id = undefined;
-      scene.remove(obj);
-
-      //console.log(tile.Object);
-    } else if (!tile.Object.userData.id) {
-      tile.Object.userData.id = assetId;
-    }
-  };
+  const { raycaster, tiles } = useCity();
 
   useEffect(() => {
     let selectedObject: Object3D | null = null;
-
-    const onMouseDown = (e: MouseEvent) => {
+    const highlight = (e: MouseEvent) => {
       e.stopPropagation();
 
       const mouse = new Vector2();
@@ -41,7 +22,10 @@ const City = () => {
 
       raycaster.setFromCamera(mouse, camera);
 
-      const intersections = raycaster.intersectObjects(scene.children, false);
+      const intersections = raycaster.intersectObjects(
+        tiles.map((tile) => tile.Object),
+        false
+      );
 
       if (selectedObject) {
         selectedObject.material.emissive.setHex(0);
@@ -50,18 +34,15 @@ const City = () => {
       if (intersections.length > 0) {
         selectedObject = intersections[0].object;
         selectedObject.material.emissive.setHex(0x555555);
-
-        onObjectSelected(selectedObject);
       }
     };
 
-    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", highlight);
 
     return () => {
-      console.log("destroying");
-      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", highlight);
     };
-  }, [assetId]);
+  }, [tiles]);
 
   return (
     <>

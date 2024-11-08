@@ -1,14 +1,10 @@
 import React from "react";
 import { useCity } from "../contexts/city-context";
-import { useFrame } from "@react-three/fiber";
+
 
 const VisualiseObjects = () => {
   const { tiles, buildingObjects } = useCity();
 
-  // useFrame(({ camera }) => {
-  //   console.log("Camera Position:", camera.position);
-  //   console.log("Camera Rotation:", camera.rotation);
-  // });
 
   return (
     <>
@@ -18,9 +14,7 @@ const VisualiseObjects = () => {
         ))}
 
       {buildingObjects &&
-        buildingObjects.map((obj, index) => (
-          <primitive key={index} object={obj} />
-        ))}
+        buildingObjects.map((obj) => <primitive key={obj.uuid} object={obj} />)}
     </>
   );
 };

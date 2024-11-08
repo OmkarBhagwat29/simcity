@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import "../../css/toolbar.css";
-import { AssetId, useCity } from "../../contexts/city-context";
+import { CommandId, useCity } from "../../contexts/city-context";
 
 const selectedColor = "lightblue";
 const UIPanel = () => {
-  const { setAssetId } = useCity();
+  const { setCommandId, setAssetId } = useCity();
 
   const [activeButton, setActiveButton] = useState<string | null>(null);
 
-  const handleButtonClick = (id: AssetId) => {
-    setAssetId(id);
+  const handleButtonClick = (id: CommandId) => {
+    setCommandId(id);
     setActiveButton(id.toString());
   };
 
@@ -25,7 +25,10 @@ const UIPanel = () => {
         BULLDOZE
       </button>
       <button
-        onClick={() => handleButtonClick("residential")}
+        onClick={() => {
+          handleButtonClick("residential");
+          setAssetId("residential");
+        }}
         style={{
           backgroundColor:
             activeButton === "residential" ? selectedColor : "white",
@@ -34,7 +37,10 @@ const UIPanel = () => {
         RESIDENTIAL
       </button>
       <button
-        onClick={() => handleButtonClick("commercial")}
+        onClick={() => {
+          handleButtonClick("commercial");
+          setAssetId("commercial");
+        }}
         style={{
           backgroundColor:
             activeButton === "commercial" ? selectedColor : "white",
@@ -43,7 +49,10 @@ const UIPanel = () => {
         COMMERCIAL
       </button>
       <button
-        onClick={() => handleButtonClick("industrial")}
+        onClick={() => {
+          handleButtonClick("industrial");
+          setAssetId("industrial");
+        }}
         style={{
           backgroundColor:
             activeButton === "industrial" ? selectedColor : "white",
@@ -52,7 +61,10 @@ const UIPanel = () => {
         INDUSTRIAL
       </button>
       <button
-        onClick={() => handleButtonClick("road")}
+        onClick={() => {
+          handleButtonClick("road");
+          setAssetId("road");
+        }}
         style={{
           backgroundColor: activeButton === "road" ? selectedColor : "white",
         }}

@@ -1,5 +1,6 @@
 import { BoxGeometry, Mesh, MeshLambertMaterial } from "three";
 import { AssetId } from "../contexts/city-context";
+import { BuildingType } from "../contexts/buildings";
 
 const buildingGeom = new BoxGeometry(1, 1, 1);
 
@@ -12,48 +13,61 @@ const assets: Record<
   (
     tileIndex: number,
     x: number,
-    y: number
+    y: number,
+    data: BuildingType
   ) => Mesh<BoxGeometry, MeshLambertMaterial>
 > = {
   grass: (tileIndex: number, x: number, y: number) => {
     const grassMaterial = new MeshLambertMaterial({ color: "green" });
     const tile = new Mesh(grassGeom, grassMaterial);
     tile.position.set(x, -0.5, y);
-    tile.userData.id = "grass";
     tile.userData.tileIndex = tileIndex;
+    tile.receiveShadow = true;
     return tile;
   },
-  residential: (tileIndex: number, x: number, y: number) => {
+  residential: (
+    tileIndex: number,
+    x: number,
+    y: number,
+    data: BuildingType
+  ) => {
     const buildingMaterial = new MeshLambertMaterial({ color: 0x00ff00 });
     const building = new Mesh(buildingGeom, buildingMaterial);
-    building.position.set(x, 1 / 2, y);
-    building.userData.id = "residential";
+    building.scale.set(0.8, data.height, 0.8);
+    building.position.set(x, data.height / 2, y);
     building.userData.tileIndex = tileIndex;
+    building.receiveShadow = true;
+    building.castShadow = true;
     return building;
   },
-  commercial: (tileIndex: number, x: number, y: number) => {
+  commercial: (tileIndex: number, x: number, y: number, data: BuildingType) => {
     const buildingMaterial = new MeshLambertMaterial({ color: 0x0000ff });
     const building = new Mesh(buildingGeom, buildingMaterial);
-    building.position.set(x, 0.5, y);
-    building.userData.id = "commercial";
+    building.scale.set(0.8, data.height, 0.8);
+    building.position.set(x, data.height / 2, y);
     building.userData.tileIndex = tileIndex;
+    building.receiveShadow = true;
+    building.castShadow = true;
     return building;
   },
-  industrial: (tileIndex: number, x: number, y: number) => {
+  industrial: (tileIndex: number, x: number, y: number, data: BuildingType) => {
     const buildingMaterial = new MeshLambertMaterial({ color: 0xffff00 });
     const building = new Mesh(buildingGeom, buildingMaterial);
-    building.position.set(x, 0.5, y);
-    building.userData.id = "industrial";
+    building.scale.set(0.8, data.height, 0.8);
+    building.position.set(x, data.height / 2, y);
     building.userData.tileIndex = tileIndex;
+    building.receiveShadow = true;
+    building.castShadow = true;
     return building;
   },
-  road: (tileIndex: number, x: number, y: number) => {
+  road: (tileIndex: number, x: number, y: number, data: BuildingType) => {
     const buildingMaterial = new MeshLambertMaterial({ color: 0x444440 });
     const building = new Mesh(buildingGeom, buildingMaterial);
     building.position.set(x, 0.05, y);
     building.scale.set(1, 0.1, 1);
-    building.userData.id = "road";
     building.userData.tileIndex = tileIndex;
+
+    building.receiveShadow = true;
     return building;
   },
 
@@ -66,7 +80,8 @@ export const createAssetInstance = (
   assetId: AssetId,
   tileIndex: number,
   x: number,
-  y: number
+  y: number,
+  data: BuildingType
 ) => {
-  return assets[assetId](tileIndex, x, y);
+  return assets[assetId](tileIndex, x, y, data);
 };

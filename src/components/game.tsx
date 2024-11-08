@@ -3,22 +3,18 @@ import CityScene from "./CityScene";
 
 import {
   AssetId,
-  BuildingStage,
   CityProvider,
+  CommandId,
   Tile,
 } from "../contexts/city-context";
 import { Object3D, Raycaster } from "three";
 
 const Game = () => {
   const [tiles, setTileObjects] = useState<Tile[]>([]);
-  const [assetId, setAsset] = useState<AssetId>("none");
-  const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
+  const [assetId, setAsset] = useState<AssetId | undefined>(undefined);
+  const [commandId, setCommandId] = useState<CommandId | undefined>(undefined);
 
-  const buildingStage: BuildingStage[] = [
-    { name: "stage-1", height: 1 },
-    { name: "stage-2", height: 2 },
-    { name: "stage-3", height: 3 },
-  ];
+  const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
 
   const addTileObjects = (tiles: Tile[]) => {
     setTileObjects((prv: Tile[]) => [...prv, ...tiles]);
@@ -26,6 +22,16 @@ const Game = () => {
 
   const addBuildingObjects = (objs: Object3D[]) => {
     setBuildingObjects((prv) => [...prv, ...objs]);
+  };
+
+  const removeBuildingObjects = (objs: Object3D[]) => {
+    setBuildingObjects((prevBuildingObjects) => {
+      // Prepare a new array with the filtered buildings outside of React's state update
+      const newBuildingObjects = prevBuildingObjects.filter(
+        (building) => !objs.some((obj) => obj.uuid === building.uuid)
+      );
+      return newBuildingObjects;
+    });
   };
 
   return (
@@ -36,13 +42,15 @@ const Game = () => {
           tiles,
           addTileObjects,
           buildingObjects,
-          buildingStage,
           addBuildingObjects,
+          removeBuildingObjects,
           raycaster: new Raycaster(),
           assetId,
           setAssetId: (toolType) => {
-            setAsset(toolType);
+            setAsset(() => toolType);
           },
+          commandId,
+          setCommandId,
         }}
       >
         <CityScene />
