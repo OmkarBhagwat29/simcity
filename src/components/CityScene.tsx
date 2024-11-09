@@ -1,13 +1,11 @@
-import { Box, OrbitControls } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
-import React, { useEffect } from "react";
-import VisualiseObjects from "./VisualiseObjects";
+import {  OrbitControls } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+
 import { useCity } from "../contexts/city-context";
 import SetupLights from "./SetupLights";
-import CityTiles from "./cityTiles";
-import CityBuildings from "./CityBuildings";
+
 import { Perf } from "r3f-perf";
-import { Vector2 } from "three";
+
 import City from "./city";
 import UIPanel from "./ui/ui-panel";
 

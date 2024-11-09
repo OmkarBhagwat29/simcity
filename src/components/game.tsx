@@ -14,6 +14,10 @@ const Game = () => {
   const [assetId, setAsset] = useState<AssetId | undefined>(undefined);
   const [commandId, setCommandId] = useState<CommandId | undefined>(undefined);
 
+  const [play, setPlay] = useState(true);
+
+  const [infoDiv, setDiv] = useState<HTMLDivElement | null>(null);
+
   const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
 
   const addTileObjects = (tiles: Tile[]) => {
@@ -47,10 +51,18 @@ const Game = () => {
           raycaster: new Raycaster(),
           assetId,
           setAssetId: (toolType) => {
-            setAsset(() => toolType);
+            setAsset(toolType);
           },
           commandId,
           setCommandId,
+          play,
+          setPlay: (run) => {
+            setPlay(run);
+          },
+          infoDiv,
+          setInfoDiv: (div: HTMLDivElement) => {
+            setDiv(div);
+          },
         }}
       >
         <CityScene />

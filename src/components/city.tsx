@@ -2,47 +2,65 @@ import CityTiles from "./cityTiles";
 import CityBuildings from "./CityBuildings";
 import VisualiseObjects from "./VisualiseObjects";
 import { useEffect } from "react";
-import { useThree } from "@react-three/fiber";
-import { Object3D, Vector2 } from "three";
 import { useCity } from "../contexts/city-context";
+import { getSelectedObject } from "../helpers/raycaster-helper";
+import { useThree } from "@react-three/fiber";
+import { Mesh } from "three";
 
 const City = () => {
+  const { commandId, raycaster, infoDiv, tiles } = useCity();
   const { size, camera, scene } = useThree();
-
-  const { raycaster, tiles } = useCity();
-
   useEffect(() => {
-    let selectedObject: Object3D | null = null;
-    const highlight = (e: MouseEvent) => {
-      e.stopPropagation();
+    let selectedObject: Mesh | null = null;
+    const onMouseDown = (e: MouseEvent) => {
+      if (selectedObject && selectedObject.material.length) {
+        //show info
 
-      const mouse = new Vector2();
-      mouse.x = (e.clientX / size.width) * 2 - 1;
-      mouse.y = -(e.clientY / size.height) * 2 + 1;
+        selectedObject.material.forEach((mat) => {
+          mat.emissive.setHex(0);
+        });
 
-      raycaster.setFromCamera(mouse, camera);
+        if (infoDiv) {
+          infoDiv.innerHTML = "";
+        }
+      }
 
-      const intersections = raycaster.intersectObjects(
-        tiles.map((tile) => tile.Object),
-        false
+      selectedObject = getSelectedObject(
+        raycaster,
+        scene.children,
+        e,
+        camera,
+        size.width,
+        size.height
       );
 
-      if (selectedObject) {
-        selectedObject.material.emissive.setHex(0);
-      }
+      if (selectedObject && selectedObject.material.length) {
+        //show info
 
-      if (intersections.length > 0) {
-        selectedObject = intersections[0].object;
-        selectedObject.material.emissive.setHex(0x555555);
+        selectedObject.material.forEach((mat) => {
+          mat.emissive.setHex(0x555555);
+        });
+
+        //get tile
+        const tile = tiles.filter(
+          (tile, index) => index === selectedObject?.userData.tileIndex
+        )[0];
+
+        if (tile && infoDiv) {
+          infoDiv.innerHTML = JSON.stringify(tile.Object.userData, null, 2)
+            .replace(/^{|}$/g, "") // Removes the curly braces
+            .replace(/,/g, "<br>") // Replaces commas with <br>
+            .replace(/"/g, ""); // Removes the quotes around keys and values
+        }
       }
     };
 
-    window.addEventListener("mousemove", highlight);
+    if (commandId !== "select") return;
 
-    return () => {
-      window.removeEventListener("mousemove", highlight);
-    };
-  }, [tiles]);
+    window.addEventListener("mousedown", onMouseDown);
+
+    return () => window.removeEventListener("mousedown", onMouseDown);
+  }, [commandId]);
 
   return (
     <>

@@ -1,75 +1,95 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../css/toolbar.css";
 import { CommandId, useCity } from "../../contexts/city-context";
 
-const selectedColor = "lightblue";
 const UIPanel = () => {
-  const { setCommandId, setAssetId } = useCity();
+  const infoDivRef = useRef<HTMLDivElement | null>(null);
+
+  const { setCommandId, setAssetId, setPlay, setInfoDiv } = useCity();
+
+  const [pauseBtnPressed, setPauseBtnPressed] = useState(false);
 
   const [activeButton, setActiveButton] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!infoDivRef.current) return;
+
+    setInfoDiv(infoDivRef.current);
+
+    console.log(infoDivRef.current);
+  }, [infoDivRef.current]);
+
+  useEffect(() => {
+    setPlay(!pauseBtnPressed);
+  }, [pauseBtnPressed]);
 
   const handleButtonClick = (id: CommandId) => {
     setCommandId(id);
     setActiveButton(id.toString());
   };
 
+  const handlePauseClick = () => {
+    setPauseBtnPressed(!pauseBtnPressed);
+  };
+
   return (
     <div className="toolbar">
       <button
+        className={`button ${activeButton === "select" ? "active" : ""}`}
+        onClick={() => handleButtonClick("select")}
+      >
+        SELECT
+      </button>
+
+      <button
+        className={`button ${activeButton === "bulldoze" ? "active" : ""}`}
         onClick={() => handleButtonClick("bulldoze")}
-        style={{
-          backgroundColor:
-            activeButton === "bulldoze" ? selectedColor : "white",
-        }}
       >
         BULLDOZE
       </button>
       <button
+        className={`button ${activeButton === "residential" ? "active" : ""}`}
         onClick={() => {
           handleButtonClick("residential");
           setAssetId("residential");
-        }}
-        style={{
-          backgroundColor:
-            activeButton === "residential" ? selectedColor : "white",
         }}
       >
         RESIDENTIAL
       </button>
       <button
+        className={`button ${activeButton === "commercial" ? "active" : ""}`}
         onClick={() => {
           handleButtonClick("commercial");
           setAssetId("commercial");
-        }}
-        style={{
-          backgroundColor:
-            activeButton === "commercial" ? selectedColor : "white",
         }}
       >
         COMMERCIAL
       </button>
       <button
+        className={`button ${activeButton === "industrial" ? "active" : ""}`}
         onClick={() => {
           handleButtonClick("industrial");
           setAssetId("industrial");
-        }}
-        style={{
-          backgroundColor:
-            activeButton === "industrial" ? selectedColor : "white",
         }}
       >
         INDUSTRIAL
       </button>
       <button
+        className={`button ${activeButton === "road" ? "active" : ""}`}
         onClick={() => {
           handleButtonClick("road");
           setAssetId("road");
         }}
-        style={{
-          backgroundColor: activeButton === "road" ? selectedColor : "white",
-        }}
       >
         ROAD
+      </button>
+
+      <div ref={infoDivRef} className="display-panel">
+        INFO
+      </div>
+
+      <button className="button" onClick={handlePauseClick}>
+        {pauseBtnPressed ? "RESUME" : "PAUSE"}
       </button>
     </div>
   );

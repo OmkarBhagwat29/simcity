@@ -6,11 +6,11 @@ const SetupLights = () => {
 
   return (
     <>
-      <ambientLight color={0xffffff} intensity={1} />
+      <ambientLight color={0xffffff} intensity={3.5} />
 
       <directionalLight
         ref={camRef}
-        intensity={3}
+        intensity={2}
         color={0xffffff}
         position={[20, 20, 20]}
         castShadow

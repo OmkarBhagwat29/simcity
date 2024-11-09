@@ -13,6 +13,7 @@ const CityBuildings = () => {
     removeBuildingObjects,
     tiles,
     buildingObjects,
+    play,
   } = useCity();
 
   const building = useCityBuildings();
@@ -29,6 +30,8 @@ const CityBuildings = () => {
 
   //update
   useFrame(() => {
+    if (!play) return;
+
     const objsToRemove: Object3D[] = [];
     const objsToAdd: Object3D[] = [];
 
@@ -44,7 +47,7 @@ const CityBuildings = () => {
           if (building.updated) {
             objsToRemove.push(exisitingBuilding);
 
-            const assetId = building.id as AssetId;
+            const assetId = building.type as AssetId;
             const newAsset = createAssetInstance(
               assetId,
               index,
@@ -64,13 +67,13 @@ const CityBuildings = () => {
     });
 
     if (objsToRemove.length > 0) {
-      console.log("removing");
+      // console.log("remove length ->", objsToRemove.length);
       removeBuildingObjects(objsToRemove);
     }
 
-    if (objsToAdd.length >> 0) {
-      console.log("adding");
+    if (objsToAdd.length > 0) {
       addBuildingObjects(objsToAdd);
+      // console.log("add length ->", objsToAdd.length);
     }
   });
 

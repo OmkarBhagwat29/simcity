@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Object3D, Vector2 } from "three";
+import { Object3D } from "three";
 import { useCity } from "../contexts/city-context";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { createAssetInstance } from "../assets/assets";
 import { buildingFactory } from "../contexts/buildings";
+import { getSelectedObject } from "../helpers/raycaster-helper";
 
 export const useCityBuildings = () => {
   const [building, setBuilding] = useState<Object3D | null>();
@@ -11,55 +12,38 @@ export const useCityBuildings = () => {
 
   const { size, camera, scene } = useThree();
 
-  const onObjectSelected = (obj: Object3D) => {
-    // console.log(assetId);
-
-    const tile = tiles[obj.userData.tileIndex];
-
-    if (commandId === "bulldoze" && tile.Object.userData.building) {
-      tile.Object.userData.building = undefined;
-      setBuilding(obj);
-    } else if (!tile.Object.userData.building) {
-      const asset = createAssetInstance(
-        assetId!,
-        tile.Object.userData.tileIndex,
-        tile.Object.position.x,
-        tile.Object.position.z,
-        buildingFactory[assetId!]()
-      );
-
-      tile.Object.userData.building = buildingFactory[assetId!]();
-
-      console.log(tile.Object.userData);
-      setBuilding(asset);
-    }
-  };
-
   useEffect(() => {
     if (!assetId) return;
 
-    let selectedObject: Object3D | null = null;
-
     const onMouseDown = (e: MouseEvent) => {
-      e.stopPropagation();
-
-      const mouse = new Vector2();
-      mouse.x = (e.clientX / size.width) * 2 - 1;
-      mouse.y = -(e.clientY / size.height) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-
-      const intersections = raycaster.intersectObjects(scene.children, false);
+      const selectedObject = getSelectedObject(
+        raycaster,
+        scene.children,
+        e,
+        camera,
+        size.width,
+        size.height
+      );
 
       if (selectedObject) {
-        selectedObject.material.emissive.setHex(0);
-      }
+        const tile = tiles[selectedObject.userData.tileIndex];
 
-      if (intersections.length > 0) {
-        selectedObject = intersections[0].object;
-        selectedObject.material.emissive.setHex(0x555555);
+        if (commandId === "bulldoze" && tile.Object.userData.building) {
+          tile.Object.userData.building = undefined;
+          setBuilding(selectedObject);
+        } else if (!tile.Object.userData.building && commandId !== "select") {
+          const asset = createAssetInstance(
+            assetId!,
+            tile.Object.userData.tileIndex,
+            tile.Object.position.x,
+            tile.Object.position.z,
+            buildingFactory[assetId!]()
+          );
 
-        onObjectSelected(selectedObject);
+          tile.Object.userData.building = buildingFactory[assetId!]();
+
+          setBuilding(asset);
+        }
       }
     };
 

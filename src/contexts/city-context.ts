@@ -15,6 +15,7 @@ export type AssetId =
   | "road";
 
 export type CommandId =
+  | "select"
   | "bulldoze"
   | "residential"
   | "commercial"
@@ -30,9 +31,13 @@ interface CityContextProps {
   removeBuildingObjects: (obj: Object3D[]) => void;
   raycaster: Raycaster;
   assetId: AssetId | undefined;
-  setAssetId: (assetId: AssetId) => void;
+  setAssetId: (assetId: AssetId | undefined) => void;
   commandId: CommandId | undefined;
   setCommandId: (command: CommandId) => void;
+  play: boolean;
+  setPlay: (play: boolean) => void;
+  infoDiv: HTMLDivElement | null;
+  setInfoDiv: (div: HTMLDivElement) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({
@@ -47,6 +52,10 @@ export const CityContext = createContext<CityContextProps>({
   setAssetId: () => {},
   commandId: undefined,
   setCommandId: () => {},
+  play: true,
+  setPlay: () => {},
+  infoDiv: null,
+  setInfoDiv: () => {},
 });
 
 export const useCity = () => {

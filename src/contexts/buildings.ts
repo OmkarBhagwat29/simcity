@@ -1,11 +1,12 @@
 export type BuildingType = {
-  id: string;
+  type: string;
+  style: number;
   height: number;
   updated: boolean;
   update: () => void;
 };
 
-const updateSpeed = 0.0001;
+const updateSpeed = 0.001;
 // Define the buildingFactory object type
 export type BuildingFactory = {
   grass: () => BuildingType;
@@ -18,7 +19,8 @@ export type BuildingFactory = {
 // Implement the buildingFactory
 export const buildingFactory: BuildingFactory = {
   grass: () => ({
-    id: "grass",
+    type: "grass",
+    style: Math.floor(3 * Math.random()) + 1,
     height: 1,
     updated: false,
     update() {
@@ -26,8 +28,9 @@ export const buildingFactory: BuildingFactory = {
     },
   }),
   residential: () => ({
-    id: "residential",
-    height: 0.1,
+    type: "residential",
+    style: Math.floor(3 * Math.random()) + 1,
+    height: 1,
     updated: false,
     update() {
       if (Math.random() < updateSpeed) {
@@ -39,21 +42,25 @@ export const buildingFactory: BuildingFactory = {
     },
   }),
   commercial: () => ({
-    id: "commercial",
-    height: 0.1,
+    type: "commercial",
+    height: 1,
+    style: Math.floor(3 * Math.random()) + 1,
     updated: false,
     update() {
       if (Math.random() < updateSpeed) {
         if (this.height < 5) {
           this.height += 1;
           this.updated = true;
+        } else {
+          this.updated = false;
         }
       }
     },
   }),
   industrial: () => ({
-    id: "industrial",
-    height: 0.1,
+    type: "industrial",
+    height: 1,
+    style: Math.floor(3 * Math.random()) + 1,
     updated: false,
     update() {
       if (Math.random() < updateSpeed) {
@@ -65,8 +72,9 @@ export const buildingFactory: BuildingFactory = {
     },
   }),
   road: () => ({
-    id: "road",
+    type: "road",
     height: 0.1,
+    style: Math.floor(3 * Math.random()) + 1,
     updated: false,
     update() {
       this.updated = false;
