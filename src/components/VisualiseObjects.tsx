@@ -9,12 +9,21 @@ const VisualiseObjects = () => {
   return (
     <>
       {tiles &&
-        tiles.map((tile, index) => (
-          <primitive key={index} object={tile.Object} />
+        tiles.map((tile) => (
+          <primitive
+            key={tile.Object.uuid}
+            object={tile.Object}
+
+          />
         ))}
 
       {buildingObjects &&
-        buildingObjects.map((obj) => <primitive key={obj.uuid} object={obj} />)}
+        buildingObjects.map((obj) => (
+          <primitive
+            key={obj.uuid}
+            object={obj}
+          />
+        ))}
     </>
   );
 };

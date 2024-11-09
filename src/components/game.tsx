@@ -48,7 +48,6 @@ const Game = () => {
           buildingObjects,
           addBuildingObjects,
           removeBuildingObjects,
-          raycaster: new Raycaster(),
           assetId,
           setAssetId: (toolType) => {
             setAsset(toolType);

@@ -29,7 +29,6 @@ interface CityContextProps {
   addTileObjects: (tiles: Tile[]) => void;
   addBuildingObjects: (obj: Object3D[]) => void;
   removeBuildingObjects: (obj: Object3D[]) => void;
-  raycaster: Raycaster;
   assetId: AssetId | undefined;
   setAssetId: (assetId: AssetId | undefined) => void;
   commandId: CommandId | undefined;
@@ -47,7 +46,6 @@ export const CityContext = createContext<CityContextProps>({
   buildingObjects: [],
   addBuildingObjects: () => {},
   removeBuildingObjects: () => {},
-  raycaster: new Raycaster(),
   assetId: undefined,
   setAssetId: () => {},
   commandId: undefined,

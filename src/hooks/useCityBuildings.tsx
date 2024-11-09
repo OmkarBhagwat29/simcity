@@ -8,7 +8,8 @@ import { getSelectedObject } from "../helpers/raycaster-helper";
 
 export const useCityBuildings = () => {
   const [building, setBuilding] = useState<Object3D | null>();
-  const { raycaster, commandId, assetId, tiles } = useCity();
+  const { commandId, assetId, tiles } = useCity();
+  const { raycaster } = useThree();
 
   const { size, camera, scene } = useThree();
 
