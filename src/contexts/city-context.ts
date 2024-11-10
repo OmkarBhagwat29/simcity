@@ -20,7 +20,8 @@ export type CommandId =
   | "residential"
   | "commercial"
   | "industrial"
-  | "road";
+  | "road"
+  | undefined;
 
 interface CityContextProps {
   size: number;

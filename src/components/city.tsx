@@ -9,7 +9,7 @@ const City = () => {
       <CityTiles />
       <CityBuildings />
       <VisualiseObjects />
-      <MouseInteraction />
+      {/* <MouseInteraction /> */}
     </>
   );
 };

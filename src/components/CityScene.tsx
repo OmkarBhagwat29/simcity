@@ -1,4 +1,4 @@
-import {  OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 import { useCity } from "../contexts/city-context";
@@ -8,6 +8,7 @@ import { Perf } from "r3f-perf";
 
 import City from "./city";
 import UIPanel from "./ui/ui-panel";
+import { MOUSE } from "three";
 
 // Camera constants
 
@@ -20,7 +21,7 @@ const ZOOM_SENSITIVITY = 1;
 const PAN_SENSITIVITY = 1;
 
 const CityScene = () => {
-  const { size } = useCity();
+  const { size, commandId } = useCity();
   return (
     <>
       <UIPanel />
@@ -45,6 +46,19 @@ const CityScene = () => {
           zoomSpeed={ZOOM_SENSITIVITY}
           panSpeed={PAN_SENSITIVITY}
           target={[size / 2, 0, size / 2]}
+          enablePan={
+            commandId !== "bulldoze" &&
+            commandId !== "select" &&
+            commandId !== undefined
+              ? false
+              : true
+          }
+          // enableZoom
+          mouseButtons={{
+            LEFT: MOUSE.PAN, // Pan with left click
+            //MIDDLE: THREE.MOUSE.PAN, // Pan with middle click
+            RIGHT: MOUSE.ROTATE, // Rotate with right click
+          }}
         />
 
         <City />

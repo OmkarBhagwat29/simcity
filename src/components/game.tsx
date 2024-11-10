@@ -7,7 +7,7 @@ import {
   CommandId,
   Tile,
 } from "../contexts/city-context";
-import { Object3D, Raycaster } from "three";
+import { Object3D } from "three";
 
 const Game = () => {
   const [tiles, setTileObjects] = useState<Tile[]>([]);
@@ -16,7 +16,7 @@ const Game = () => {
 
   const [play, setPlay] = useState(true);
 
-  const [infoDiv, setDiv] = useState<HTMLDivElement | null>(null);
+  const [infoDiv, setInfoDiv] = useState<HTMLDivElement | null>(null);
 
   const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
 
@@ -55,13 +55,9 @@ const Game = () => {
           commandId,
           setCommandId,
           play,
-          setPlay: (run) => {
-            setPlay(run);
-          },
+          setPlay,
           infoDiv,
-          setInfoDiv: (div: HTMLDivElement) => {
-            setDiv(div);
-          },
+          setInfoDiv,
         }}
       >
         <CityScene />
