@@ -1,7 +1,7 @@
 import CityTiles from "./cityTiles";
 import CityBuildings from "./CityBuildings";
 import VisualiseObjects from "./VisualiseObjects";
-import MouseInteraction from "./MouseInteraction";
+
 
 const City = () => {
   return (
@@ -9,7 +9,6 @@ const City = () => {
       <CityTiles />
       <CityBuildings />
       <VisualiseObjects />
-      {/* <MouseInteraction /> */}
     </>
   );
 };

@@ -38,6 +38,8 @@ interface CityContextProps {
   setPlay: (play: boolean) => void;
   infoDiv: HTMLDivElement | null;
   setInfoDiv: (div: HTMLDivElement) => void;
+  enablePan: boolean;
+  setEnablePan: (enable: boolean) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({
@@ -55,6 +57,8 @@ export const CityContext = createContext<CityContextProps>({
   setPlay: () => {},
   infoDiv: null,
   setInfoDiv: () => {},
+  enablePan: true,
+  setEnablePan: () => {},
 });
 
 export const useCity = () => {

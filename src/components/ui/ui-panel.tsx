@@ -15,8 +15,6 @@ const UIPanel = () => {
     if (!infoDivRef.current) return;
 
     setInfoDiv(infoDivRef.current);
-
-    console.log(infoDivRef.current);
   }, [infoDivRef.current]);
 
   useEffect(() => {
@@ -25,7 +23,7 @@ const UIPanel = () => {
 
   const handleButtonClick = (id: CommandId) => {
     setCommandId(id);
-    setActiveButton(id.toString());
+    setActiveButton(id!.toString());
   };
 
   const handlePauseClick = () => {

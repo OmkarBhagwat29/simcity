@@ -20,6 +20,8 @@ const Game = () => {
 
   const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
 
+  const [enablePan, setEnablePan] = useState(true);
+
   const addTileObjects = (tiles: Tile[]) => {
     setTileObjects((prv: Tile[]) => [...prv, ...tiles]);
   };
@@ -58,6 +60,8 @@ const Game = () => {
           setPlay,
           infoDiv,
           setInfoDiv,
+          enablePan,
+          setEnablePan,
         }}
       >
         <CityScene />

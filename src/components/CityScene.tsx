@@ -9,6 +9,7 @@ import { Perf } from "r3f-perf";
 import City from "./city";
 import UIPanel from "./ui/ui-panel";
 import { MOUSE } from "three";
+import { useEffect } from "react";
 
 // Camera constants
 
@@ -21,7 +22,8 @@ const ZOOM_SENSITIVITY = 1;
 const PAN_SENSITIVITY = 1;
 
 const CityScene = () => {
-  const { size, commandId } = useCity();
+  const { size, enablePan } = useCity();
+
   return (
     <>
       <UIPanel />
@@ -46,13 +48,7 @@ const CityScene = () => {
           zoomSpeed={ZOOM_SENSITIVITY}
           panSpeed={PAN_SENSITIVITY}
           target={[size / 2, 0, size / 2]}
-          enablePan={
-            commandId !== "bulldoze" &&
-            commandId !== "select" &&
-            commandId !== undefined
-              ? false
-              : true
-          }
+          enablePan={enablePan}
           // enableZoom
           mouseButtons={{
             LEFT: MOUSE.PAN, // Pan with left click
