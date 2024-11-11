@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
-import { Object3D, Raycaster } from "three";
+import { Object3D } from "three";
 import { TerrainType } from "./terrain";
+import { Citizen } from "./citizen";
 
 export interface Tile {
   terrainType: TerrainType;
@@ -8,11 +9,11 @@ export interface Tile {
 }
 
 export type AssetId =
-  | "grass"
   | "residential"
   | "commercial"
   | "industrial"
-  | "road";
+  | "road"
+  | "grass";
 
 export type CommandId =
   | "select"
@@ -40,6 +41,8 @@ interface CityContextProps {
   setInfoDiv: (div: HTMLDivElement) => void;
   enablePan: boolean;
   setEnablePan: (enable: boolean) => void;
+  citizens: Citizen[];
+  addCitizens: (citizen: Citizen[]) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({
@@ -59,6 +62,8 @@ export const CityContext = createContext<CityContextProps>({
   setInfoDiv: () => {},
   enablePan: true,
   setEnablePan: () => {},
+  citizens: [],
+  addCitizens: () => {},
 });
 
 export const useCity = () => {

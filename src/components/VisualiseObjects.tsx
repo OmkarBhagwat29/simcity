@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useCity } from "../contexts/city-context";
 import { Mesh } from "three";
 import { setEmissive } from "../helpers/material-helper";
@@ -30,8 +30,8 @@ const VisualiseObjects = () => {
       )[0];
 
       infoDiv.innerHTML = JSON.stringify(tile.Object.userData, null, 2); // formatted JSON
-    } else {
-      infoDiv!.innerHTML = "";
+    } else if (infoDiv) {
+      infoDiv.innerHTML = "";
     }
 
     selectedObject = obj;

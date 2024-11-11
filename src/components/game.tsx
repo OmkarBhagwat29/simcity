@@ -8,11 +8,13 @@ import {
   Tile,
 } from "../contexts/city-context";
 import { Object3D } from "three";
+import { Citizen } from "../contexts/citizen";
 
 const Game = () => {
   const [tiles, setTileObjects] = useState<Tile[]>([]);
   const [assetId, setAsset] = useState<AssetId | undefined>(undefined);
   const [commandId, setCommandId] = useState<CommandId | undefined>(undefined);
+  const [citizens, setCitizens] = useState<Citizen[]>([]);
 
   const [play, setPlay] = useState(true);
 
@@ -40,6 +42,11 @@ const Game = () => {
     });
   };
 
+  const addCitizens = (newCitizens: Citizen[]) => {
+
+    setCitizens(newCitizens);
+  };
+
   return (
     <>
       <CityProvider
@@ -62,6 +69,8 @@ const Game = () => {
           setInfoDiv,
           enablePan,
           setEnablePan,
+          citizens,
+          addCitizens,
         }}
       >
         <CityScene />

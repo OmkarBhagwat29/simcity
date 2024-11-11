@@ -27,6 +27,8 @@ export const useCityBuildings = () => {
     if (selectedObject) {
       const tile = tiles[selectedObject.userData.tileIndex];
 
+      console.log(tile.Object.userData);
+
       if (commandId === "bulldoze" && tile.Object.userData.building) {
         tile.Object.userData.building = undefined;
         setBuilding(selectedObject);

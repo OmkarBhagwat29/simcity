@@ -1,5 +1,11 @@
+import { Citizen, createCitizen } from "./citizen";
+import { AssetId } from "./city-context";
+
 export type BuildingType = {
-  type: string;
+  uuid: string;
+  residents?: Citizen[];
+  maxResidents?: number;
+  type: AssetId;
   style: number;
   height: number;
   updated: boolean;
@@ -19,6 +25,7 @@ export type BuildingFactory = {
 // Implement the buildingFactory
 export const buildingFactory: BuildingFactory = {
   grass: () => ({
+    uuid: crypto.randomUUID(),
     type: "grass",
     style: Math.floor(3 * Math.random()) + 1,
     height: 1,
@@ -28,10 +35,13 @@ export const buildingFactory: BuildingFactory = {
     },
   }),
   residential: () => ({
+    uuid: crypto.randomUUID(),
+    residents: [],
     type: "residential",
     style: Math.floor(3 * Math.random()) + 1,
     height: 1,
     updated: false,
+    maxResidents: 4,
     update() {
       if (Math.random() < updateSpeed) {
         if (this.height < 5) {
@@ -39,9 +49,21 @@ export const buildingFactory: BuildingFactory = {
           this.updated = true;
         }
       }
+      if (
+        Math.random() < 0.001 &&
+        this.height >= 1 &&
+        this.residents!.length < this.maxResidents!
+      ) {
+        const resident = createCitizen(this);
+        this.residents?.push(resident);
+        this.residentAdded = true;
+      } else {
+        this.residentAdded = false;
+      }
     },
   }),
   commercial: () => ({
+    uuid: crypto.randomUUID(),
     type: "commercial",
     height: 1,
     style: Math.floor(3 * Math.random()) + 1,
@@ -58,6 +80,7 @@ export const buildingFactory: BuildingFactory = {
     },
   }),
   industrial: () => ({
+    uuid: crypto.randomUUID(),
     type: "industrial",
     height: 1,
     style: Math.floor(3 * Math.random()) + 1,
@@ -72,6 +95,7 @@ export const buildingFactory: BuildingFactory = {
     },
   }),
   road: () => ({
+    uuid: crypto.randomUUID(),
     type: "road",
     height: 0.1,
     style: Math.floor(3 * Math.random()) + 1,

@@ -24,11 +24,11 @@ const CityBuildings = () => {
     if (commandId !== "bulldoze") {
       setTimeout(() => {
         addBuildingObjects([building]);
-      }, 10);
+      }, 0);
     } else {
       setTimeout(() => {
         removeBuildingObjects([building]);
-      }, 10);
+      }, 0);
     }
   }, [building]);
 

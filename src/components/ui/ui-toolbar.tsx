@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../css/toolbar.css";
+
 import { CommandId, useCity } from "../../contexts/city-context";
 
-const UIPanel = () => {
+const UIToolbar = () => {
   const infoDivRef = useRef<HTMLDivElement | null>(null);
 
-  const { setCommandId, setAssetId, setPlay, setInfoDiv } = useCity();
+  const { setCommandId, setAssetId, setPlay, setInfoDiv, setEnablePan } =
+    useCity();
 
   const [pauseBtnPressed, setPauseBtnPressed] = useState(false);
 
@@ -36,14 +37,14 @@ const UIPanel = () => {
         className={`button ${activeButton === "select" ? "active" : ""}`}
         onClick={() => handleButtonClick("select")}
       >
-        SELECT
+        <img src="./icons/select.png" className="toolbar-icon" />
       </button>
 
       <button
         className={`button ${activeButton === "bulldoze" ? "active" : ""}`}
         onClick={() => handleButtonClick("bulldoze")}
       >
-        BULLDOZE
+        <img src="./icons/bulldozer.png" className="toolbar-icon" />
       </button>
       <button
         className={`button ${activeButton === "residential" ? "active" : ""}`}
@@ -52,7 +53,7 @@ const UIPanel = () => {
           setAssetId("residential");
         }}
       >
-        RESIDENTIAL
+        <img src="./icons/residential.png" className="toolbar-icon" />
       </button>
       <button
         className={`button ${activeButton === "commercial" ? "active" : ""}`}
@@ -61,7 +62,7 @@ const UIPanel = () => {
           setAssetId("commercial");
         }}
       >
-        COMMERCIAL
+        <img src="./icons/commercial.png" className="toolbar-icon" />
       </button>
       <button
         className={`button ${activeButton === "industrial" ? "active" : ""}`}
@@ -70,7 +71,7 @@ const UIPanel = () => {
           setAssetId("industrial");
         }}
       >
-        INDUSTRIAL
+        <img src="./icons/factory.png" className="toolbar-icon" />
       </button>
       <button
         className={`button ${activeButton === "road" ? "active" : ""}`}
@@ -79,18 +80,22 @@ const UIPanel = () => {
           setAssetId("road");
         }}
       >
-        ROAD
+        <img src="./icons/road.png" className="toolbar-icon" />
       </button>
 
-      <div ref={infoDivRef} className="display-panel">
+      {/* <div ref={infoDivRef} className="display-panel">
         INFO
-      </div>
+      </div> */}
 
       <button className="button" onClick={handlePauseClick}>
-        {pauseBtnPressed ? "RESUME" : "PAUSE"}
+        {pauseBtnPressed ? (
+          <img src="./icons/play.png" className="toolbar-icon" />
+        ) : (
+          <img src="./icons/pause.png" className="toolbar-icon" />
+        )}
       </button>
     </div>
   );
 };
 
-export default UIPanel;
+export default UIToolbar;

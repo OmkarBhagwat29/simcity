@@ -1,1 +1,1 @@
-export type TerrainType = "grass" | "river";
+export type TerrainType = "ground" | "river";
