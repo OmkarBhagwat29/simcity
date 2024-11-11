@@ -1,12 +1,27 @@
 .titlebar {
-  position: absolute;
+  position: fixed;
   display: flex;
   z-index: 10;
-  flex-direction: row;
+  top: 0;
+  left: 70px;
+  right: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.2);
+
+  font-size: x-large;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(92, 91, 91, 0.678);
-  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 100vw;
+
   user-select: none;
-  gap: 50px;
 }
+
+.titlebar-items {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+

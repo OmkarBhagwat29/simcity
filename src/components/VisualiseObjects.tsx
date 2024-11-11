@@ -2,6 +2,7 @@ import React from "react";
 import { useCity } from "../contexts/city-context";
 import { Mesh } from "three";
 import { setEmissive } from "../helpers/material-helper";
+import { toHTML } from "../helpers/game-helper";
 
 let selectedObject: Mesh | null = null;
 let hoverObject: Mesh | null = null;
@@ -29,7 +30,7 @@ const VisualiseObjects = () => {
         (tile, index) => index === obj.userData.tileIndex
       )[0];
 
-      infoDiv.innerHTML = JSON.stringify(tile.Object.userData, null, 2); // formatted JSON
+      infoDiv.innerHTML = toHTML(tile); // formatted JSON
     } else if (infoDiv) {
       infoDiv.innerHTML = "";
     }

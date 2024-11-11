@@ -22,7 +22,7 @@ export const useCityTiles = () => {
           buildingFactory.grass()
         );
 
-        objs.push({ terrainType: "grass", Object: tile });
+        objs.push({ terrainType: "ground", Object: tile });
 
         index++;
       }

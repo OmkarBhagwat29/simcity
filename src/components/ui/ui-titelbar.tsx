@@ -7,9 +7,9 @@ const UiTitelbar = () => {
 
   return (
     <div className="titlebar">
-      <div className="titlebar-left-items">$1000</div>
-      <div className="titlebar-center-items">My City</div>
-      <div className="titlebar-right-items">Population: {citizens.length}</div>
+      <div className="titlebar-items">$1000</div>
+      <div className="titlebar-items">My City</div>
+      <div className="titlebar-items">Population: {citizens.length}</div>
     </div>
   );
 };

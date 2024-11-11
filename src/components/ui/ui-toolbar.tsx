@@ -1,22 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { CommandId, useCity } from "../../contexts/city-context";
+import "../../css/toolbar.css";
 
 const UIToolbar = () => {
-  const infoDivRef = useRef<HTMLDivElement | null>(null);
-
-  const { setCommandId, setAssetId, setPlay, setInfoDiv, setEnablePan } =
-    useCity();
+  const { setCommandId, setAssetId, setPlay } = useCity();
 
   const [pauseBtnPressed, setPauseBtnPressed] = useState(false);
 
   const [activeButton, setActiveButton] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!infoDivRef.current) return;
-
-    setInfoDiv(infoDivRef.current);
-  }, [infoDivRef.current]);
 
   useEffect(() => {
     setPlay(!pauseBtnPressed);

@@ -33,6 +33,9 @@ export const buildingFactory: BuildingFactory = {
     update() {
       this.updated = false;
     },
+    toHTML() {
+      return ``;
+    },
   }),
   residential: () => ({
     uuid: crypto.randomUUID(),
@@ -56,9 +59,6 @@ export const buildingFactory: BuildingFactory = {
       ) {
         const resident = createCitizen(this);
         this.residents?.push(resident);
-        this.residentAdded = true;
-      } else {
-        this.residentAdded = false;
       }
     },
   }),

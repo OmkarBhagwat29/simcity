@@ -14,7 +14,7 @@
   padding-top: 50px;
   overflow: hidden;
   user-select: none;
-  background-color: rgba(92, 91, 91, 0.678);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .display-panel {
@@ -45,7 +45,7 @@
   transition: background-color 0.15s ease-in-out;
   cursor: pointer;
 
-  box-shadow: 0px, 0px, 5px, 5px rgba(0, 0, 0, 30%);
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 30%);
 
   height: 50px;
   width: 50px;
