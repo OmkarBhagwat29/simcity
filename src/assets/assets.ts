@@ -7,7 +7,7 @@ import {
   TextureLoader,
 } from "three";
 import { AssetId } from "../contexts/city-context";
-import { BuildingType } from "../contexts/buildings";
+import { Building } from "../contexts/buildings";
 
 const geom = new BoxGeometry(1, 1, 1);
 
@@ -26,8 +26,6 @@ const loadTextrue = (url: string) => {
 const grassTexture = loadTextrue(
   "./textures/grass/Stylized_Grass_003_basecolor.jpg"
 );
-
-grassTexture.repeat.set(4, 4);
 
 const textures = {
   residential1: loadTextrue("./textures/buildings/residential_1.png"),
@@ -52,12 +50,7 @@ const getSideMaterial = (textureName: TextureName) => {
   return new MeshLambertMaterial({ map: textures[textureName].clone() });
 };
 
-const createZoneMesh = (
-  tileIndex: number,
-  x: number,
-  y: number,
-  data: BuildingType
-) => {
+const createZoneMesh = (x: number, y: number, data: Building) => {
   const textureName = data.type + data.style;
 
   const topMaterial = getTopMaterial();
@@ -74,7 +67,6 @@ const createZoneMesh = (
 
   const mesh = new Mesh(geom, materialArray);
 
-  mesh.userData.tileIndex = tileIndex;
   mesh.scale.set(0.8, (data.height - 0.95) / 2, 0.8);
   mesh.material.forEach((material) =>
     material.map?.repeat.set(1, data.height - 1)
@@ -89,55 +81,45 @@ const createZoneMesh = (
 const assets: Record<
   AssetId,
   (
-    tileIndex: number,
     x: number,
     y: number,
-    data: BuildingType
+    data: Building
   ) => Mesh<BoxGeometry, MeshLambertMaterial | MeshLambertMaterial[]>
 > = {
-  grass: (tileIndex: number, x: number, y: number) => {
+  grass: (x: number, y: number) => {
     const grassMaterial = new MeshLambertMaterial({
       color: "green",
       map: grassTexture,
     });
     const tile = new Mesh(geom, grassMaterial);
     tile.position.set(x, -0.5, y);
-    tile.userData.tileIndex = tileIndex;
     tile.receiveShadow = true;
     return tile;
   },
-  residential: (
-    tileIndex: number,
-    x: number,
-    y: number,
-    data: BuildingType
-  ) => {
-    return createZoneMesh(tileIndex, x, y, data);
+  residential: (x: number, y: number, data: Building) => {
+    return createZoneMesh(x, y, data);
   },
-  commercial: (tileIndex: number, x: number, y: number, data: BuildingType) => {
-    return createZoneMesh(tileIndex, x, y, data);
+  commercial: (x: number, y: number, data: Building) => {
+    return createZoneMesh(x, y, data);
   },
-  industrial: (tileIndex: number, x: number, y: number, data: BuildingType) => {
-    return createZoneMesh(tileIndex, x, y, data);
+  industrial: (x: number, y: number, data: Building) => {
+    return createZoneMesh(x, y, data);
   },
-  road: (tileIndex: number, x: number, y: number, data: BuildingType) => {
+  road: (x: number, y: number, data: Building) => {
     const buildingMaterial = new MeshLambertMaterial({ color: 0x444440 });
-    const building = new Mesh(geom, buildingMaterial);
-    building.position.set(x, 0.05, y);
-    building.scale.set(1, 0.1, 1);
-    building.userData.tileIndex = tileIndex;
-
-    building.receiveShadow = true;
-    return building;
+    const mesh = new Mesh(geom, buildingMaterial);
+    mesh.position.set(x, 0.05, y);
+    mesh.scale.set(1, 0.1, 1);
+    mesh.receiveShadow = true;
+    return mesh;
   },
 };
 
 export const createAssetInstance = (
   assetId: AssetId,
-  tileIndex: number,
   x: number,
   y: number,
-  data: BuildingType
+  data: Building
 ) => {
-  return assets[assetId](tileIndex, x, y, data);
+  return assets[assetId](x, y, data);
 };

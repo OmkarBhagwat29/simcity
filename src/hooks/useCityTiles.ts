@@ -1,35 +1,39 @@
 import { useEffect, useState } from "react";
-import { Tile, useCity } from "../contexts/city-context";
+import { useCity } from "../contexts/city-context";
 import { createAssetInstance } from "../assets/assets";
 import { buildingFactory } from "../contexts/buildings";
+import { Mesh } from "three";
+import { createTile } from "../contexts/tile";
 
 export const useCityTiles = () => {
-  const [data, setData] = useState<Tile[] | null>(null);
-  const objs: Tile[] = [];
-  const { size } = useCity();
+  const [data, setData] = useState<Mesh[] | null>(null);
+  const objs: Mesh[] = [];
+  const { city } = useCity();
 
   useEffect(() => {
-    if (!size) return;
+    if (!city) return;
 
-    let index = 0;
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
-        const tile = createAssetInstance(
+    for (let i = 0; i < city.size; i++) {
+      for (let j = 0; j < city.size; j++) {
+        const tile = createTile(i, j, "ground");
+
+        const mesh = createAssetInstance(
           "grass",
-          index,
           i,
           j,
-          buildingFactory.grass()
+          buildingFactory.grass(i, j)
         );
 
-        objs.push({ terrainType: "ground", Object: tile });
+        mesh.userData.tile = tile;
 
-        index++;
+        city.addTile(tile);
+
+        objs.push(mesh);
       }
     }
 
     setData(objs);
-  }, [size]);
+  }, [city]);
 
   return data;
 };

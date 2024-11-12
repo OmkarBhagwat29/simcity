@@ -1,4 +1,3 @@
-import React from "react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
@@ -8,7 +7,7 @@ import SetupLights from "./SetupLights";
 import { Perf } from "r3f-perf";
 
 import { MOUSE } from "three";
-import City from "./city";
+import City from "./City";
 
 const MIN_CAMERA_RADIUS = 0.1;
 const MAX_CAMERA_RADIUS = 35;
@@ -19,7 +18,7 @@ const ZOOM_SENSITIVITY = 1;
 const PAN_SENSITIVITY = 1;
 
 const MainScene = () => {
-  const { size, enablePan } = useCity();
+  const { enablePan } = useCity();
   return (
     <Canvas
       shadows
@@ -41,7 +40,7 @@ const MainScene = () => {
         rotateSpeed={AZIMUTH_SENSITIVITY}
         zoomSpeed={ZOOM_SENSITIVITY}
         panSpeed={PAN_SENSITIVITY}
-        target={[size / 2, 0, size / 2]}
+        target={[16 / 2, 0, 16 / 2]}
         enablePan={enablePan}
         // enableZoom
         mouseButtons={{

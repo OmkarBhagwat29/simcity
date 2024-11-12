@@ -1,12 +1,7 @@
 import { createContext, useContext } from "react";
-import { Object3D } from "three";
-import { TerrainType } from "./terrain";
+import { Mesh, Object3D } from "three";
 import { Citizen } from "./citizen";
-
-export interface Tile {
-  terrainType: TerrainType;
-  Object: Object3D;
-}
+import { City } from "./city";
 
 export type AssetId =
   | "residential"
@@ -25,10 +20,9 @@ export type CommandId =
   | undefined;
 
 interface CityContextProps {
-  size: number;
-  tiles: Tile[];
+  city: City | null;
+  setCity: (city: City) => void;
   buildingObjects: Object3D[];
-  addTileObjects: (tiles: Tile[]) => void;
   addBuildingObjects: (obj: Object3D[]) => void;
   removeBuildingObjects: (obj: Object3D[]) => void;
   assetId: AssetId | undefined;
@@ -37,18 +31,18 @@ interface CityContextProps {
   setCommandId: (command: CommandId) => void;
   play: boolean;
   setPlay: (play: boolean) => void;
-  infoDiv: HTMLDivElement | null;
-  setInfoDiv: (div: HTMLDivElement) => void;
+
   enablePan: boolean;
   setEnablePan: (enable: boolean) => void;
   citizens: Citizen[];
   addCitizens: (citizen: Citizen[]) => void;
+  setSelectedObject: (object: Mesh) => void;
+  selectedObject: Object3D | null;
 }
 
 export const CityContext = createContext<CityContextProps>({
-  size: 0,
-  tiles: [],
-  addTileObjects: () => {},
+  city: null,
+  setCity: () => {},
   buildingObjects: [],
   addBuildingObjects: () => {},
   removeBuildingObjects: () => {},
@@ -58,12 +52,12 @@ export const CityContext = createContext<CityContextProps>({
   setCommandId: () => {},
   play: true,
   setPlay: () => {},
-  infoDiv: null,
-  setInfoDiv: () => {},
   enablePan: true,
   setEnablePan: () => {},
   citizens: [],
   addCitizens: () => {},
+  selectedObject: null,
+  setSelectedObject: () => {},
 });
 
 export const useCity = () => {

@@ -5,11 +5,12 @@ import { useThree } from "@react-three/fiber";
 import { createAssetInstance } from "../assets/assets";
 import { buildingFactory } from "../contexts/buildings";
 import { getSelectedObject } from "../helpers/raycaster-helper";
+import { Tile } from "../contexts/tile";
 
 let isDragging = false;
 export const useCityBuildings = () => {
   const [building, setBuilding] = useState<Object3D | null>();
-  const { commandId, setEnablePan, assetId, tiles } = useCity();
+  const { commandId, setEnablePan, assetId } = useCity();
   const { raycaster } = useThree();
 
   const { size, camera, scene } = useThree();
@@ -24,31 +25,24 @@ export const useCityBuildings = () => {
       size.height
     );
 
-    if (selectedObject) {
-      const tile = tiles[selectedObject.userData.tileIndex];
+    const tile = selectedObject?.userData.tile as Tile;
 
-      console.log(tile.Object.userData);
+    if (commandId === "bulldoze" && !tile) {
+      setBuilding(selectedObject);
+    } else if (tile && !tile.building && commandId !== "select" && assetId) {
+      const building = buildingFactory[assetId](tile.x, tile.y);
+      const asset = createAssetInstance(assetId, tile.x, tile.y, building);
 
-      if (commandId === "bulldoze" && tile.Object.userData.building) {
-        tile.Object.userData.building = undefined;
-        setBuilding(selectedObject);
-      } else if (!tile.Object.userData.building && commandId !== "select") {
-        const asset = createAssetInstance(
-          assetId!,
-          tile.Object.userData.tileIndex,
-          tile.Object.position.x,
-          tile.Object.position.z,
-          buildingFactory[assetId!]()
-        );
+      //create building
 
-        tile.Object.userData.building = buildingFactory[assetId!]();
+      tile.building = building;
 
-        setBuilding(asset);
-      }
-      return selectedObject;
+      asset.userData.id = building.uuid;
+
+      setBuilding(asset);
     }
 
-    return null;
+    return selectedObject;
   };
 
   useEffect(() => {

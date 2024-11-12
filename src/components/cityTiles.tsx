@@ -1,15 +1,14 @@
 import React, { useEffect } from "react";
-import { useCity } from "../contexts/city-context";
-import { useCityTiles as useCityTiles } from "../hooks/useCityTiles";
 
+import { useCityTiles } from "../hooks/useCityTiles";
+import { useCity } from "../contexts/city-context";
 
 const CityTiles = () => {
-  const { addTileObjects } = useCity();
   const tiles = useCityTiles();
-
+  const { addBuildingObjects } = useCity();
   useEffect(() => {
     if (tiles) {
-      addTileObjects(tiles);
+      addBuildingObjects(tiles);
     }
   }, [tiles]);
 

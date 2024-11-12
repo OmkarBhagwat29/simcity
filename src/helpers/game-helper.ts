@@ -1,8 +1,8 @@
-import { BuildingType } from "../contexts/buildings";
+import { Building } from "../contexts/buildings";
 import { Citizen } from "../contexts/citizen";
-import { Tile } from "../contexts/city-context";
+import { Tile } from "../contexts/tile";
 
-export const getCitizensOfBuilding = (building: BuildingType): Citizen[] => {
+export const getCitizensOfBuilding = (building: Building): Citizen[] => {
   if (building.residents) {
     return building.residents;
   }
@@ -10,45 +10,80 @@ export const getCitizensOfBuilding = (building: BuildingType): Citizen[] => {
   return [];
 };
 
-export const toHTML = (tile: Tile) => {
-  const obj = tile.Object;
-  const pos = obj.position;
-  let html = ``;
+export const findTile = (
+  startTile: Tile,
+  allTiles: Tile[][],
+  searchCriterial: (tile: Tile) => boolean,
+  maxDistance: number
+): Tile | null => {
+  const visited = new Set();
 
-  html += `Coordinates: (X:${Math.round(pos.x)} Y:${Math.round(pos.z)}) <br>`;
+  const tilesToSearch: Tile[] = [];
 
-  html += `Terrain: ${tile.terrainType}<br>`;
+  tilesToSearch.push(startTile);
 
-  if (obj.userData.building) {
-    //convert building to html
+  while (tilesToSearch.length > 0) {
+    const tile = tilesToSearch.shift();
 
-    const building = obj.userData.building as BuildingType;
+    if (!tile) break;
 
-    html += toBuildingHTML(building);
+    if (visited.has(tile.uuid)) {
+      continue;
+    } else {
+      visited.add(tile.uuid);
+    }
+
+    const distance = getDistance2D(startTile.x, startTile.y, tile.x, tile.y);
+
+    if (distance > maxDistance) {
+      continue;
+    }
+
+    if (searchCriterial(tile)) {
+      return tile;
+    } else {
+      const neighbors = getTileNeighbors(tile, allTiles);
+      // neighbors.forEach((n) => console.log(n.building?.type));
+
+      tilesToSearch.push(...neighbors);
+    }
   }
 
-  return html;
+  return null;
 };
 
-export const toBuildingHTML = (building: BuildingType) => {
-  let html = `<br><strong>Building</strong><br>`;
+export const getTileNeighbors = (tile: Tile, allTiles: Tile[][]) => {
+  const neightbors: Tile[] = [];
+  const x = tile.x;
+  const y = tile.y;
 
-  html += `<strong>Type:</strong> ${building.type}<br>`;
-  html += `<strong>Style:</strong> ${building.style}<br>`;
-  html += `<strong>Height:</strong> ${building.height}<br>`;
-  html += `<strong>Current Residents:</strong> ${
-    building.residents?.length || 0
-  }<br>`;
-
-  if (building.residents && building.residents.length > 0) {
-    html += `<br><strong>Residents:</strong><ul style="list-style-type: none; padding-left: 0;">`;
-    building.residents.forEach((resident) => {
-      html += `${resident.name}  |  <strong>Age:</strong> ${resident.age}<br>`;
-    });
-    html += `</ul>`;
-  } else {
-    html += `<br><em>No residents</em>`;
+  const size = allTiles.length;
+  if (x > 0) {
+    neightbors.push(allTiles[x - 1][y]);
   }
 
-  return html;
+  if (x < size - 1) {
+    neightbors.push(allTiles[x + 1][y]);
+  }
+
+  if (y > 0) {
+    neightbors.push(allTiles[x][y - 1]);
+  }
+
+  if (y < size - 1) {
+    neightbors.push(allTiles[x][y + 1]);
+  }
+
+  return neightbors;
+};
+
+export const getDistance2D = (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+) => {
+  const dX = x1 - x2;
+  const dY = y1 - y2;
+  return Math.sqrt(dX * dX + dY * dY);
 };

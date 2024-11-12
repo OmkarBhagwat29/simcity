@@ -1,32 +1,25 @@
 import React, { useState } from "react";
 import CityScene from "./CityScene";
 
-import {
-  AssetId,
-  CityProvider,
-  CommandId,
-  Tile,
-} from "../contexts/city-context";
-import { Object3D } from "three";
+import { AssetId, CityProvider, CommandId } from "../contexts/city-context";
+import { Mesh, Object3D } from "three";
 import { Citizen } from "../contexts/citizen";
+import { City } from "../contexts/city";
 
 const Game = () => {
-  const [tiles, setTileObjects] = useState<Tile[]>([]);
+  const [city, setCity] = useState<City | null>(null);
+
   const [assetId, setAsset] = useState<AssetId | undefined>(undefined);
   const [commandId, setCommandId] = useState<CommandId | undefined>(undefined);
   const [citizens, setCitizens] = useState<Citizen[]>([]);
 
   const [play, setPlay] = useState(true);
 
-  const [infoDiv, setInfoDiv] = useState<HTMLDivElement | null>(null);
-
   const [buildingObjects, setBuildingObjects] = useState<Object3D[]>([]);
 
   const [enablePan, setEnablePan] = useState(true);
 
-  const addTileObjects = (tiles: Tile[]) => {
-    setTileObjects((prv: Tile[]) => [...prv, ...tiles]);
-  };
+  const [selectedObject, setSelectedObject] = useState<Mesh | null>(null);
 
   const addBuildingObjects = (objs: Object3D[]) => {
     setBuildingObjects((prv) => [...prv, ...objs]);
@@ -38,12 +31,12 @@ const Game = () => {
       const newBuildingObjects = prevBuildingObjects.filter(
         (building) => !objs.some((obj) => obj.uuid === building.uuid)
       );
+
       return newBuildingObjects;
     });
   };
 
   const addCitizens = (newCitizens: Citizen[]) => {
-
     setCitizens(newCitizens);
   };
 
@@ -51,9 +44,8 @@ const Game = () => {
     <>
       <CityProvider
         value={{
-          size: 16,
-          tiles,
-          addTileObjects,
+          city,
+          setCity,
           buildingObjects,
           addBuildingObjects,
           removeBuildingObjects,
@@ -65,12 +57,12 @@ const Game = () => {
           setCommandId,
           play,
           setPlay,
-          infoDiv,
-          setInfoDiv,
           enablePan,
           setEnablePan,
           citizens,
           addCitizens,
+          selectedObject,
+          setSelectedObject,
         }}
       >
         <CityScene />

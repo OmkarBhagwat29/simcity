@@ -2,21 +2,24 @@ import { useCity } from "../contexts/city-context";
 import { useFrame } from "@react-three/fiber";
 import { Citizen } from "../contexts/citizen";
 import { getCitizensOfBuilding } from "../helpers/game-helper";
-import { BuildingType } from "../contexts/buildings";
+import { Building } from "../contexts/buildings";
+import { Tile } from "../contexts/tile";
 
 const Citizens = () => {
-  const { tiles, addCitizens, citizens } = useCity();
+  const { buildingObjects, addCitizens, citizens } = useCity();
 
   useFrame(() => {
     const allCitizens: Citizen[] = [];
 
-    tiles.forEach((tile) => {
-      if (tile.Object.userData.building) {
-        allCitizens.push(
-          ...getCitizensOfBuilding(
-            tile.Object.userData.building as BuildingType
-          )
-        );
+    buildingObjects.forEach((obj) => {
+      if (obj.userData.tile) {
+        const tile = obj.userData.tile as Tile;
+
+        if (!tile.building) return;
+
+        const building = tile.building as Building;
+
+        allCitizens.push(...getCitizensOfBuilding(building));
       }
     });
 

@@ -1,15 +1,18 @@
 import React from "react";
-import UIToolbar from "./ui-toolbar";
+import UIToolbar from "./UiToolbar";
 
-import UiTitelbar from "./ui-titelbar";
-import InfoDisplay from "./info-display";
+import UiTitelbar from "./UiTitlebar";
+import InfoDisplay from "../html/InfoDisplay";
+import TileInfo from "../html/TileInfo";
 
 const UI = () => {
   return (
     <>
       <UIToolbar />
       <UiTitelbar />
-      <InfoDisplay />
+      <InfoDisplay>
+        <TileInfo />
+      </InfoDisplay>
     </>
   );
 };
