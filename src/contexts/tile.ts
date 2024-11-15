@@ -1,3 +1,4 @@
+import { Building } from "./buildings";
 import { TerrainType } from "./terrain";
 
 export interface Tile {
@@ -5,6 +6,8 @@ export interface Tile {
   terrain: TerrainType;
   readonly x: number;
   readonly y: number;
+  building?: Building;
+  setBuilding?: (Building: Building) => void;
 }
 
 export const createTile = (

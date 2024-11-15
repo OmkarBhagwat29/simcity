@@ -47,8 +47,11 @@ const CityBuildings = () => {
     const objsToAdd: Object3D[] = [];
 
     scene.traverse((child) => {
-      if (child.userData.building) {
-        const building = child.userData.building as Building;
+      if (child.userData.buildingId) {
+
+        
+
+        const building = child.userData.tile.building as Building;
 
         if (building.updated) {
           //delete this object
@@ -62,7 +65,7 @@ const CityBuildings = () => {
             building
           );
           building.updated = false;
-          newAsset.userData.building = building;
+          newAsset.userData.buildingId = building.uuid;
 
           //add object
           objsToAdd.push(newAsset);

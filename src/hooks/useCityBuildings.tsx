@@ -7,6 +7,7 @@ import { getSelectedObject } from "../helpers/raycaster-helper";
 
 import { cloneMaterials } from "../helpers/game-helper";
 import { createAssetInstance } from "../assets/assets";
+import { Tile } from "../contexts/tile";
 
 let isDragging = false;
 export const useCityBuildings = () => {
@@ -39,16 +40,17 @@ export const useCityBuildings = () => {
       //if not grass delete the obj
       setBuilding(selectedObject);
 
-      const building = selectedObject.userData.building;
+      const building = selectedObject.userData.tile.building;
 
       if (!building) return selectedObject;
 
-      selectedObject.userData.building = null;
-      city.buildings[building.x][building.y] = null;
+      selectedObject.userData.tile.building = null;
+      selectedObject.userData.buildingId = null;
+      console.log(city.tiles[building.x][building.y]);
     } else if (commandId !== "select") {
       //get tile
 
-      const tile = selectedObject.userData.tile;
+      const tile = selectedObject.userData.tile as Tile;
 
       if (!tile) return selectedObject;
 
@@ -67,8 +69,8 @@ export const useCityBuildings = () => {
         asset = createAssetInstance(assetId!, tile.x, tile.y, building);
       }
 
-      asset.userData.building = building;
-      city.addBuilding(building);
+      tile.building = building;
+      asset.userData.buildingId = building.uuid;
 
       setBuilding(asset);
     }
