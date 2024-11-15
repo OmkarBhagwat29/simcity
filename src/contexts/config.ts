@@ -1,6 +1,6 @@
 export default {
   simulation: {
-    simulationSpeed: 0.01,
+    simulationSpeed: 0.001,
   },
   citizen: {
     minWorkingAge: 16,

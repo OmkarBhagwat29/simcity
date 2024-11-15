@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo } from "react";
-import { AssetId, useCity } from "../contexts/city-context";
+import React, { useEffect } from "react";
+import { useCity } from "../contexts/city-context";
 import { useCityBuildings } from "../hooks/useCityBuildings";
 import { useFrame } from "@react-three/fiber";
 import { createAssetInstance } from "../assets/assets";
 import { Mesh, Object3D } from "three";
-import { Building } from "../contexts/buildings";
 
 const CityBuildings = () => {
   const {
@@ -14,16 +13,13 @@ const CityBuildings = () => {
     removeBuildingObjects,
     play,
     models,
+    buildingObjects,
   } = useCity();
 
   const building = useCityBuildings();
 
   useEffect(() => {
     if (!building) return;
-
-    const buildingData = building.userData.building as Building;
-
-    if (buildingData === null || !city) return;
 
     if (commandId !== "bulldoze") {
       if (!models) {
@@ -32,45 +28,75 @@ const CityBuildings = () => {
       addBuildingObjects([building]);
     } else {
       removeBuildingObjects([building]);
-
-      if (buildingData.dispose) {
-        buildingData.dispose();
-      }
     }
   }, [building]);
 
   //update
-  useFrame(({ clock, scene }) => {
+  useFrame(({ clock }) => {
     if (!play || !city) return;
 
     const objsToRemove: Object3D[] = [];
     const objsToAdd: Object3D[] = [];
 
-    scene.traverse((child) => {
-      if (child.userData.building) {
-        const building = child.userData.building as Building;
+    for (let i = 0; i < city.buildings.length; i++) {
+      for (let j = 0; j < city.buildings[0].length; j++) {
+        const building = city.buildings[i][j];
 
-        if (building.updated) {
-          //delete this object
-          objsToRemove.push(child);
+        if (building) {
+          //find obj and delete
+          let oldAsset: Object3D | null = null;
+          let newAsset: Object3D | null = null;
 
-          //crete new asset
-          const newAsset = createAssetInstance(
-            building.type,
-            building.x,
-            building.y,
-            building
-          );
-          building.updated = false;
-          newAsset.userData.building = building;
+          buildingObjects.slice(256).forEach((obj) => {
+            if (
+              obj.userData.building &&
+              obj.userData.building.uuid === building.uuid
+            ) {
+              oldAsset = obj as Object3D;
+              return;
+            }
+          });
 
-          //add object
-          objsToAdd.push(newAsset);
+          if (building.updated) {
+            if (oldAsset) {
+              objsToRemove.push(oldAsset);
+
+              building.updated = false;
+              newAsset = createAssetInstance(
+                building.type,
+                building.x,
+                building.y,
+                building
+              );
+
+              newAsset.userData.building = building;
+
+              objsToAdd.push(newAsset);
+            }
+          }
+
+          if (!building.abandoned) {
+            building.update();
+          }
+
+          const asset = newAsset ? newAsset : oldAsset;
+
+          if (asset) {
+            if (building.makeBuildingAbandonedOrReDeveloped) {
+              building.makeBuildingAbandonedOrReDeveloped(
+                city,
+                clock,
+                asset as Mesh
+              );
+            }
+
+            building.residents?.forEach((citizen) => {
+              citizen.update(city);
+            });
+          }
         }
-
-        building.update();
       }
-    });
+    }
 
     if (objsToRemove.length > 0) {
       //console.log(objsToRemove);
@@ -80,64 +106,6 @@ const CityBuildings = () => {
     if (objsToAdd.length > 0) {
       addBuildingObjects(objsToAdd);
     }
-
-    // for (let i = 0; i < city.size; i++) {
-    //   for (let j = 0; j < city.size; j++) {
-    //     const buildingData = city.buildings[i][j];
-    //     if (!buildingData) continue;
-
-    //     if (buildingData.updated) {
-    //       //remove from scene
-    //       const obj = objectMap.get(buildingData.uuid);
-
-    //       if (!obj) {
-    //         continue;
-    //       }
-
-    //       // objsToRemove.push(obj);
-    //       objectMap.delete(buildingData.uuid);
-
-    //       removeBuildingObjects([obj]);
-
-    //       const assetId = buildingData.type as AssetId;
-    //       const newAsset = createAssetInstance(
-    //         assetId,
-    //         buildingData.x,
-    //         buildingData.y,
-    //         buildingData
-    //       );
-
-    //       newAsset.userData = {};
-    //       buildingData.updated = false;
-    //       newAsset.userData.building = buildingData;
-    //       //objsToAdd.push(newAsset);
-
-    //       addBuildingObjects([newAsset]);
-    //       objectMap.set(buildingData.uuid, newAsset);
-    //     }
-    //     //
-    //     if (buildingData.makeBuildingAbandonedOrReDeveloped) {
-    //       const abondonedBuilding = objectMap.get(buildingData.uuid);
-
-    //       if (abondonedBuilding instanceof Mesh) {
-    //         //console.log("reached");
-    //         buildingData.makeBuildingAbandonedOrReDeveloped(
-    //           city,
-    //           clock,
-    //           abondonedBuilding
-    //         );
-    //       }
-    //     }
-
-    //     if (!buildingData.abandoned) {
-    //       buildingData.update();
-    //     }
-
-    //     buildingData.residents?.forEach((citizen) => {
-    //       citizen.update(city);
-    //     });
-    //   }
-    // }
   });
 
   return <></>;

@@ -50,7 +50,7 @@ const getSideMaterial = (textureName: TextureName) => {
 
 const createZoneMesh = (x: number, y: number, data: Building) => {
   const textureName = data.type + data.style;
-  console.log(textureName);
+
   const topMaterial = getTopMaterial();
   const sideMaterial = getSideMaterial(textureName as TextureName);
 

@@ -31,7 +31,7 @@ const MainScene = () => {
         ],
       }}
     >
-      {/* <Perf /> */}
+      <Perf />
       <OrbitControls
         maxPolarAngle={MAX_CAMERA_ELEVATION}
         minPolarAngle={MIN_CAMERA_ELEVATION}

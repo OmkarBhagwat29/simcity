@@ -61,18 +61,21 @@ export const createCitizen = (building: Building): Citizen => {
 
     findJob(city: City) {
       const tile = city.findTile(
-        this.building.x,
-        this.building.y,
+        building.x,
+        building.y,
         (tile: Tile) => {
-          if (!tile || !tile.building) {
+          if (!tile) {
             return false;
           }
 
+          const building = city.buildings[tile.x][tile.y];
+          if (!building) return false;
+
           if (
-            tile.building.type === "commercial" ||
-            tile.building.type === "industrial"
+            building.type === "commercial" ||
+            building.type === "industrial"
           ) {
-            if (tile.building.numberOfJobsAvailable!() > 0) {
+            if (building.numberOfJobsAvailable!() > 0) {
               return true;
             } else {
               return false;
@@ -85,8 +88,11 @@ export const createCitizen = (building: Building): Citizen => {
       );
 
       if (tile) {
-        tile.building!.workers!.push(this);
-        return tile.building!;
+        const company = city.buildings[tile.x][tile.y];
+        if (company && company.workers) {
+          company.workers!.push(this);
+          return company;
+        }
       }
 
       return null;

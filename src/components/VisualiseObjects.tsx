@@ -63,10 +63,6 @@ const VisualiseObjects = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("building object changed");
-  }, [buildingObjects]);
-
   return (
     <>
       {buildingObjects &&
@@ -77,6 +73,20 @@ const VisualiseObjects = () => {
             onPointerOut={handlePointerOut}
             key={obj.uuid}
             object={obj}
+            onUnmount={() => {
+              // Dispose geometry
+              if (obj.geometry) {
+                obj.geometry.dispose();
+              }
+              // Dispose materials
+              if (obj.material) {
+                if (Array.isArray(obj.material)) {
+                  obj.material.forEach((material) => material.dispose());
+                } else {
+                  obj.material.dispose();
+                }
+              }
+            }}
           />
         ))}
     </>

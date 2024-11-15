@@ -3,7 +3,6 @@ import { useFrame } from "@react-three/fiber";
 import { Citizen } from "../contexts/citizen";
 import { getCitizensOfBuilding } from "../helpers/game-helper";
 import { Building } from "../contexts/buildings";
-import { Tile } from "../contexts/tile";
 
 const Citizens = () => {
   const { buildingObjects, addCitizens, citizens } = useCity();
@@ -12,12 +11,10 @@ const Citizens = () => {
     const allCitizens: Citizen[] = [];
 
     buildingObjects.forEach((obj) => {
-      if (obj.userData.tile) {
-        const tile = obj.userData.tile as Tile;
+      if (obj.userData.building) {
+        const building = obj.userData.building as Building;
 
-        if (!tile.building) return;
-
-        const building = tile.building as Building;
+        if (!building) return;
 
         allCitizens.push(...getCitizensOfBuilding(building));
       }

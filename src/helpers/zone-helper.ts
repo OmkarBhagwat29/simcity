@@ -9,7 +9,10 @@ const setRoadAccess = (building: Building, city: City) => {
     building.x,
     building.y,
     (tile) => {
-      return tile.building?.type === "road";
+      const building = city.buildings[tile.x][tile.y];
+      if (!building) return false;
+
+      return building.type === "road";
     },
     config.zone.maxRoadSearchDistance
   );

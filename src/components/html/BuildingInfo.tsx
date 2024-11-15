@@ -19,8 +19,6 @@ export const BuildingInfo = ({ building }: { building: Building }) => (
     <br />
     <strong>Level:</strong> {building.height}
     <br />
-    <strong>UUID:</strong> {building.uuid}
-    <br />
     {building.type === "residential" && <ResidentialInfo building={building} />}
     {(building.type === "commercial" || building.type === "industrial") && (
       <CommercialInfo building={building} />

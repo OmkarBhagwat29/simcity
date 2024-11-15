@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Object3D } from "three";
 import { useCity } from "../contexts/city-context";
 import { useThree } from "@react-three/fiber";
@@ -8,12 +8,22 @@ import { getSelectedObject } from "../helpers/raycaster-helper";
 import { cloneMaterials } from "../helpers/game-helper";
 import { createAssetInstance } from "../assets/assets";
 
-let isDragging = false;
+function debounce(func: (...args: any[]) => void, delay: number) {
+  let timer: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
+
 export const useCityBuildings = () => {
   const [building, setBuilding] = useState<Object3D | null>();
   const { commandId, setEnablePan, assetId, models, city } = useCity();
   const { raycaster } = useThree();
   const { size, camera, scene } = useThree();
+  const isDraggingRef = useRef(false);
 
   const setBuildingObject = (e: MouseEvent): Object3D | null => {
     if (!city) return null;
@@ -32,19 +42,20 @@ export const useCityBuildings = () => {
 
     if (commandId === "bulldoze") {
       //check if click occur on asset
-      if (assetId === "grass") {
+      if (selectedObject.userData.tile) {
         return selectedObject;
       }
-
-      //if not grass delete the obj
-      setBuilding(selectedObject);
 
       const building = selectedObject.userData.building;
 
       if (!building) return selectedObject;
 
+      //if not grass delete the obj
+
       selectedObject.userData.building = null;
       city.buildings[building.x][building.y] = null;
+
+      setBuilding(selectedObject);
     } else if (commandId !== "select") {
       //get tile
 
@@ -69,7 +80,6 @@ export const useCityBuildings = () => {
 
       asset.userData.building = building;
       city.addBuilding(building);
-
       setBuilding(asset);
     }
 
@@ -82,7 +92,7 @@ export const useCityBuildings = () => {
     const onMouseDown = (e: MouseEvent) => {
       if (e.button === 0) {
         // Left mouse button
-        isDragging = true;
+        isDraggingRef.current = true;
 
         const selectedObject = setBuildingObject(e);
 
@@ -92,14 +102,15 @@ export const useCityBuildings = () => {
       }
     };
 
-    const onMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
+    const onMouseMove = debounce((e: MouseEvent) => {
+      if (isDraggingRef.current) {
         e.stopPropagation();
         setBuildingObject(e);
       }
-    };
+    }, 50);
+
     const onMouseUp = () => {
-      isDragging = false;
+      isDraggingRef.current = false;
 
       setEnablePan(true);
     };
@@ -111,7 +122,6 @@ export const useCityBuildings = () => {
     }
 
     return () => {
-      console.log("destroying");
       setBuilding(null);
 
       window.removeEventListener("mousedown", onMouseDown);
