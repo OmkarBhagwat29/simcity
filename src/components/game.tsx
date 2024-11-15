@@ -5,6 +5,7 @@ import { AssetId, CityProvider, CommandId } from "../contexts/city-context";
 import { Mesh, Object3D } from "three";
 import { Citizen } from "../contexts/citizen";
 import { City } from "../contexts/city";
+import ModelManager from "./building/models/ModelManager";
 
 const Game = () => {
   const [city, setCity] = useState<City | null>(null);
@@ -21,6 +22,8 @@ const Game = () => {
 
   const [selectedObject, setSelectedObject] = useState<Mesh | null>(null);
 
+  const [models, setModels] = useState<Object3D[]>([]);
+
   const addBuildingObjects = (objs: Object3D[]) => {
     setBuildingObjects((prv) => [...prv, ...objs]);
   };
@@ -34,6 +37,10 @@ const Game = () => {
 
       return newBuildingObjects;
     });
+  };
+
+  const addModels = (models: Object3D[]) => {
+    setModels(models);
   };
 
   const addCitizens = (newCitizens: Citizen[]) => {
@@ -63,8 +70,11 @@ const Game = () => {
           addCitizens,
           selectedObject,
           setSelectedObject,
+          models: models,
+          setModels: addModels,
         }}
       >
+        <ModelManager />
         <CityScene />
       </CityProvider>
     </>

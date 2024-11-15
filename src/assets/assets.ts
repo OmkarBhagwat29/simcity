@@ -23,9 +23,7 @@ const loadTextrue = (url: string) => {
   return texture;
 };
 
-const grassTexture = loadTextrue(
-  "./textures/grass/Stylized_Grass_003_basecolor.jpg"
-);
+const grassTexture = loadTextrue("./textures/grass/grass.jpg");
 
 const textures = {
   residential1: loadTextrue("./textures/buildings/residential_1.png"),
@@ -52,7 +50,7 @@ const getSideMaterial = (textureName: TextureName) => {
 
 const createZoneMesh = (x: number, y: number, data: Building) => {
   const textureName = data.type + data.style;
-
+  console.log(textureName);
   const topMaterial = getTopMaterial();
   const sideMaterial = getSideMaterial(textureName as TextureName);
 

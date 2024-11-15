@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useCity } from "../../contexts/city-context";
 import { Tile } from "../../contexts/tile";
+import { Building } from "../../contexts/buildings";
 import BuildingInfo from "./BuildingInfo";
 
 const TileInfo = () => {
   const { selectedObject, city } = useCity();
 
   const [tile, setTile] = useState<Tile | null>(null);
+  const [building, SetBuilding] = useState<Building | null>(null);
 
   useEffect(() => {
     //set tile
     if (!selectedObject || !city) return;
 
-    let tile = selectedObject.userData.tile;
-    if (!tile) {
-      tile = city.tiles[selectedObject.position.x][selectedObject.position.z];
-    }
+    const tile = selectedObject.userData.tile;
 
     if (tile) {
       setTile(tile);
+      SetBuilding(null);
+      return;
+    }
+
+    const building = selectedObject.userData.building;
+    if (building) {
+      SetBuilding(building);
+      setTile(city.tiles[building.x][building.y]);
     }
   }, [selectedObject]);
 
@@ -32,7 +39,7 @@ const TileInfo = () => {
           Terrain: {tile.terrain} <br />
         </>
       )}
-      {tile && tile.building && <BuildingInfo building={tile.building} />}
+      {building && <BuildingInfo building={building} />}
     </>
   );
 };

@@ -5,6 +5,8 @@ import "../../css/titlebar.css";
 const UiTitelbar = () => {
   const { citizens } = useCity();
 
+  
+
   return (
     <div className="titlebar">
       <div className="titlebar-items">$1000</div>

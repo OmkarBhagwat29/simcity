@@ -3,99 +3,141 @@ import { AssetId, useCity } from "../contexts/city-context";
 import { useCityBuildings } from "../hooks/useCityBuildings";
 import { useFrame } from "@react-three/fiber";
 import { createAssetInstance } from "../assets/assets";
-import { Object3D } from "three";
+import { Mesh, Object3D } from "three";
+import { Building } from "../contexts/buildings";
 
 const CityBuildings = () => {
-  const { city, commandId, addBuildingObjects, removeBuildingObjects, play } =
-    useCity();
+  const {
+    city,
+    commandId,
+    addBuildingObjects,
+    removeBuildingObjects,
+    play,
+    models,
+  } = useCity();
 
   const building = useCityBuildings();
-
-  const objectMap = useMemo(() => {
-    return new Map<string, Object3D>();
-  }, []);
 
   useEffect(() => {
     if (!building) return;
 
+    const buildingData = building.userData.building as Building;
+
+    if (buildingData === null || !city) return;
+
     if (commandId !== "bulldoze") {
+      if (!models) {
+        return;
+      }
       addBuildingObjects([building]);
-      objectMap.set(building.userData.id, building);
     } else {
       removeBuildingObjects([building]);
-      objectMap.delete(building.userData.id);
 
-      const tile = city?.tiles[building.position.x][building.position.z];
-
-      if (tile) {
-        if (tile.building && tile.building.dispose) {
-          tile.building.dispose();
-        }
-
-        tile.building = null;
+      if (buildingData.dispose) {
+        buildingData.dispose();
       }
     }
   }, [building]);
 
   //update
-  useFrame(() => {
+  useFrame(({ clock, scene }) => {
     if (!play || !city) return;
 
     const objsToRemove: Object3D[] = [];
     const objsToAdd: Object3D[] = [];
 
-    for (let i = 0; i < city.size; i++) {
-      for (let j = 0; j < city.size; j++) {
-        const tile = city.tiles[i][j];
+    scene.traverse((child) => {
+      if (child.userData.building) {
+        const building = child.userData.building as Building;
 
-        if (tile.building) {
-          const building = tile.building;
+        if (building.updated) {
+          //delete this object
+          objsToRemove.push(child);
 
-          if (building.updated) {
-            //remove from scene
-            const obj = objectMap.get(building.uuid);
+          //crete new asset
+          const newAsset = createAssetInstance(
+            building.type,
+            building.x,
+            building.y,
+            building
+          );
+          building.updated = false;
+          newAsset.userData.building = building;
 
-            if (!obj) {
-              continue;
-            }
-
-            objsToRemove.push(obj);
-
-            const assetId = building.type as AssetId;
-            const newAsset = createAssetInstance(
-              assetId,
-              tile.x,
-              tile.y,
-              building
-            );
-
-            building.updated = false;
-            newAsset.userData.id = building.uuid;
-            objsToAdd.push(newAsset);
-          }
-
-          tile.building.update();
-
-          tile.building.residents?.forEach((citizen) => {
-            citizen.update(city);
-          });
+          //add object
+          objsToAdd.push(newAsset);
         }
+
+        building.update();
       }
-    }
+    });
 
     if (objsToRemove.length > 0) {
-      // console.log("remove length ->", objsToRemove.length);
+      //console.log(objsToRemove);
       removeBuildingObjects(objsToRemove);
-
-      objsToRemove.forEach((o) => objectMap.delete(o.userData.id));
     }
 
     if (objsToAdd.length > 0) {
       addBuildingObjects(objsToAdd);
-
-      objsToAdd.forEach((o) => objectMap.set(o.userData.id, o));
-      // console.log("add length ->", objsToAdd.length);
     }
+
+    // for (let i = 0; i < city.size; i++) {
+    //   for (let j = 0; j < city.size; j++) {
+    //     const buildingData = city.buildings[i][j];
+    //     if (!buildingData) continue;
+
+    //     if (buildingData.updated) {
+    //       //remove from scene
+    //       const obj = objectMap.get(buildingData.uuid);
+
+    //       if (!obj) {
+    //         continue;
+    //       }
+
+    //       // objsToRemove.push(obj);
+    //       objectMap.delete(buildingData.uuid);
+
+    //       removeBuildingObjects([obj]);
+
+    //       const assetId = buildingData.type as AssetId;
+    //       const newAsset = createAssetInstance(
+    //         assetId,
+    //         buildingData.x,
+    //         buildingData.y,
+    //         buildingData
+    //       );
+
+    //       newAsset.userData = {};
+    //       buildingData.updated = false;
+    //       newAsset.userData.building = buildingData;
+    //       //objsToAdd.push(newAsset);
+
+    //       addBuildingObjects([newAsset]);
+    //       objectMap.set(buildingData.uuid, newAsset);
+    //     }
+    //     //
+    //     if (buildingData.makeBuildingAbandonedOrReDeveloped) {
+    //       const abondonedBuilding = objectMap.get(buildingData.uuid);
+
+    //       if (abondonedBuilding instanceof Mesh) {
+    //         //console.log("reached");
+    //         buildingData.makeBuildingAbandonedOrReDeveloped(
+    //           city,
+    //           clock,
+    //           abondonedBuilding
+    //         );
+    //       }
+    //     }
+
+    //     if (!buildingData.abandoned) {
+    //       buildingData.update();
+    //     }
+
+    //     buildingData.residents?.forEach((citizen) => {
+    //       citizen.update(city);
+    //     });
+    //   }
+    // }
   });
 
   return <></>;

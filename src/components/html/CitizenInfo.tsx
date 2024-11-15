@@ -2,7 +2,8 @@ import { Citizen } from "../../contexts/citizen";
 
 export const CitizenInfo = ({ resident }: { resident: Citizen }) => (
   <li>
-    <strong>Name:</strong> {resident.name}
+    <strong>Name:</strong> {resident.name} (Age:{resident.age} | State:{" "}
+    {resident.state})
     <ul
       style={{
         paddingLeft: "16px",
@@ -11,10 +12,7 @@ export const CitizenInfo = ({ resident }: { resident: Citizen }) => (
       }}
     >
       <li>
-        <strong>Age:</strong> {resident.age}
-      </li>
-      <li>
-        <strong>Job:</strong> {resident.job?.name ?? "Unemployed"}
+        <strong>Job:</strong> {resident.job?.name ?? "N/A"}
       </li>
     </ul>
   </li>

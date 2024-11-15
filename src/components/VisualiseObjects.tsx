@@ -1,7 +1,9 @@
 import { useCity } from "../contexts/city-context";
 import { Mesh } from "three";
 import { setEmissive } from "../helpers/material-helper";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import config from "../contexts/config";
+import { getLastParentOfObject } from "../helpers/game-helper";
 
 type Selection = {
   selectedObject: Mesh | null;
@@ -10,7 +12,6 @@ type Selection = {
 
 const VisualiseObjects = () => {
   const { buildingObjects, commandId, setSelectedObject } = useCity();
-
   const selection: Selection = useMemo(() => {
     return { selectedObject: null, hoverObject: null };
   }, []);
@@ -22,17 +23,17 @@ const VisualiseObjects = () => {
       return;
     }
 
+    const obj = e.object as Mesh;
     if (selection.selectedObject) {
-      setEmissive(selection.selectedObject, "0x000000");
+      setEmissive(selection.selectedObject, config.selection.baseEmissive);
     }
 
-    const obj = e.object as Mesh;
-
-    setEmissive(obj, "0x888888");
+    //select
+    setEmissive(obj, config.selection.selectEmissive);
 
     if (commandId === "select") {
-      //get tile
-      setSelectedObject(e.object);
+      const mainObj = getLastParentOfObject(e.object);
+      setSelectedObject(mainObj);
     }
 
     selection.selectedObject = obj;
@@ -42,8 +43,9 @@ const VisualiseObjects = () => {
     e.stopPropagation();
 
     const obj = e.object as Mesh;
-
-    setEmissive(obj, "0x888888");
+    //  / console.log(obj);
+    //hover
+    setEmissive(obj, config.selection.selectEmissive);
 
     selection.hoverObject = obj;
   };
@@ -55,11 +57,15 @@ const VisualiseObjects = () => {
       selection.hoverObject &&
       selection.hoverObject.uuid !== selection.selectedObject?.uuid
     ) {
-      setEmissive(selection.hoverObject, "0x000000");
+      setEmissive(selection.hoverObject, config.selection.baseEmissive);
 
       selection.hoverObject = null;
     }
   };
+
+  useEffect(() => {
+    console.log("building object changed");
+  }, [buildingObjects]);
 
   return (
     <>

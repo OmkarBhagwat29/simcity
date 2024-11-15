@@ -36,8 +36,10 @@ interface CityContextProps {
   setEnablePan: (enable: boolean) => void;
   citizens: Citizen[];
   addCitizens: (citizen: Citizen[]) => void;
-  setSelectedObject: (object: Mesh) => void;
+  setSelectedObject: (object: Object3D) => void;
   selectedObject: Object3D | null;
+  models: Object3D[] | null;
+  setModels: (models: Object3D[]) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({
@@ -58,6 +60,8 @@ export const CityContext = createContext<CityContextProps>({
   addCitizens: () => {},
   selectedObject: null,
   setSelectedObject: () => {},
+  models: [],
+  setModels: () => {},
 });
 
 export const useCity = () => {

@@ -48,8 +48,11 @@ export const createCitizen = (building: Building): Citizen => {
             this.state = "unemployed";
           }
           break;
+        case "retired":
+          this.job = null;
+          return;
         default:
-          console.log("unkonw employmnet status");
+        //console.log("unkonw employmnet status");
       }
     },
     state: "unemployed",

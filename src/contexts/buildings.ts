@@ -1,7 +1,9 @@
+import { Clock, Mesh } from "three";
 import { Citizen, createCitizen } from "./citizen";
 import { City } from "./city";
 import { AssetId } from "./city-context";
 import config from "./config";
+import { simulateAdandomentAndRenovate } from "../helpers/zone-helper";
 
 export type Building = {
   readonly x: number;
@@ -12,6 +14,7 @@ export type Building = {
   readonly style: number;
   readonly maxResidents?: number;
   residents?: Citizen[];
+  abandonedTime?: number;
 
   readonly workers?: Citizen[];
   readonly maxWorkers?: number;
@@ -23,11 +26,19 @@ export type Building = {
   updated: boolean;
 
   update: () => void;
-  checkRoadAccess?: (city: City) => void;
+  makeBuildingAbandonedOrReDeveloped?: (
+    city: City,
+    clock: Clock,
+    object: Mesh
+  ) => void;
   hasRoadAccess?: boolean;
+  abandoned?: boolean;
+  abandonDays?: number;
+  canRedeveloped?: boolean;
+  goingTobeAbandoned?: boolean;
 };
 
-const updateSpeed = 0.001;
+const updateSpeed = config.simulation.simulationSpeed;
 // Define the buildingFactory object type
 export type BuildingFactory = {
   grass: (x: number, y: number) => Building;
@@ -61,6 +72,12 @@ export const buildingFactory: BuildingFactory = {
     height: 1,
     updated: false,
     maxResidents: config.zone.maxResident,
+    abandonDays: 0,
+    hasRoadAccess: false,
+    abandoned: false,
+    abandonedTime: 0,
+    canRedeveloped: false,
+    goingTobeAbandoned: false,
     update() {
       if (Math.random() < updateSpeed) {
         if (this.height < 5) {
@@ -70,28 +87,15 @@ export const buildingFactory: BuildingFactory = {
       }
       if (
         Math.random() < config.zone.residentMoveInChance &&
-        this.height >= 1 &&
+        this.height > 1 &&
         this.residents!.length < this.maxResidents!
       ) {
         const resident = createCitizen(this);
         this.residents?.push(resident);
       }
     },
-    checkRoadAccess(city: City) {
-      const road = city.findTile(
-        x,
-        y,
-        (tile) => {
-          return tile.building?.type === "road";
-        },
-        config.zone.maxRoadSearchDistance
-      );
-
-      if (road) {
-        this.hasRoadAccess = true;
-      } else {
-        this.hasRoadAccess = false;
-      }
+    makeBuildingAbandonedOrReDeveloped(city: City, clock: Clock, object: Mesh) {
+      simulateAdandomentAndRenovate(this, city, clock, object);
     },
   }),
   commercial: (x: number, y: number) => ({
@@ -122,6 +126,16 @@ export const buildingFactory: BuildingFactory = {
     dispose() {
       this.workers?.forEach((worker) => (worker.job = null));
     },
+
+    abandonDays: 0,
+    hasRoadAccess: false,
+    abandoned: false,
+    abandonedTime: 0,
+    canRedeveloped: false,
+    goingTobeAbandoned: false,
+    makeBuildingAbandonedOrReDeveloped(city: City, clock: Clock, object: Mesh) {
+      simulateAdandomentAndRenovate(this, city, clock, object);
+    },
   }),
   industrial: (x: number, y: number) => ({
     x,
@@ -150,6 +164,15 @@ export const buildingFactory: BuildingFactory = {
     },
     dispose() {
       this.workers?.forEach((worker) => (worker.job = null));
+    },
+    abandonDays: 0,
+    hasRoadAccess: false,
+    abandoned: false,
+    abandonedTime: 0,
+    canRedeveloped: false,
+    goingTobeAbandoned: false,
+    makeBuildingAbandonedOrReDeveloped(city: City, clock: Clock, object: Mesh) {
+      simulateAdandomentAndRenovate(this, city, clock, object);
     },
   }),
   road: (x: number, y: number) => ({

@@ -1,6 +1,9 @@
+import {  Mesh, Object3D } from "three";
 import { Building } from "../contexts/buildings";
 import { Citizen } from "../contexts/citizen";
 import { Tile } from "../contexts/tile";
+import { City } from "../contexts/city";
+import config from "../contexts/config";
 
 export const getCitizensOfBuilding = (building: Building): Citizen[] => {
   if (building.residents) {
@@ -87,3 +90,24 @@ export const getDistance2D = (
   const dY = y1 - y2;
   return Math.sqrt(dX * dX + dY * dY);
 };
+
+export const cloneMaterials = (scene: Object3D) => {
+  scene.traverse((child: Object3D) => {
+    if (child instanceof Mesh && child.material) {
+      child.material = child.material.clone(); // Clone the material
+    }
+  });
+};
+
+export const getLastParentOfObject = (object: Object3D): Object3D => {
+  let currentParent = object;
+  while (currentParent.parent && currentParent.parent.type !== "Scene") {
+    currentParent = currentParent.parent;
+  }
+
+  return currentParent;
+};
+
+
+
+

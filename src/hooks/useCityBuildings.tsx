@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
-import { Mesh, Object3D } from "three";
+import { Object3D } from "three";
 import { useCity } from "../contexts/city-context";
 import { useThree } from "@react-three/fiber";
-import { createAssetInstance } from "../assets/assets";
 import { buildingFactory } from "../contexts/buildings";
 import { getSelectedObject } from "../helpers/raycaster-helper";
-import { Tile } from "../contexts/tile";
+
+import { cloneMaterials } from "../helpers/game-helper";
+import { createAssetInstance } from "../assets/assets";
 
 let isDragging = false;
 export const useCityBuildings = () => {
   const [building, setBuilding] = useState<Object3D | null>();
-  const { commandId, setEnablePan, assetId } = useCity();
+  const { commandId, setEnablePan, assetId, models, city } = useCity();
   const { raycaster } = useThree();
-
   const { size, camera, scene } = useThree();
 
-  const setBuildingObject = (e: MouseEvent): Mesh | null => {
+  const setBuildingObject = (e: MouseEvent): Object3D | null => {
+    if (!city) return null;
+
+    e.stopPropagation();
     const selectedObject = getSelectedObject(
       raycaster,
       scene.children,
@@ -25,19 +28,47 @@ export const useCityBuildings = () => {
       size.height
     );
 
-    const tile = selectedObject?.userData.tile as Tile;
+    if (!selectedObject) return selectedObject;
 
-    if (commandId === "bulldoze" && !tile) {
+    if (commandId === "bulldoze") {
+      //check if click occur on asset
+      if (assetId === "grass") {
+        return selectedObject;
+      }
+
+      //if not grass delete the obj
       setBuilding(selectedObject);
-    } else if (tile && !tile.building && commandId !== "select" && assetId) {
-      const building = buildingFactory[assetId](tile.x, tile.y);
-      const asset = createAssetInstance(assetId, tile.x, tile.y, building);
 
-      //create building
+      const building = selectedObject.userData.building;
 
-      tile.building = building;
+      if (!building) return selectedObject;
 
-      asset.userData.id = building.uuid;
+      selectedObject.userData.building = null;
+      city.buildings[building.x][building.y] = null;
+    } else if (commandId !== "select") {
+      //get tile
+
+      const tile = selectedObject.userData.tile;
+
+      if (!tile) return selectedObject;
+
+      //on the tile create the aset
+      const building = buildingFactory[assetId!](tile.x, tile.y);
+
+      let asset: Object3D | null = null;
+
+      if (assetId !== "road") {
+        if (!models) return selectedObject;
+
+        asset = models[0].clone();
+        asset.position.set(building.x, 0, building.y);
+        cloneMaterials(asset);
+      } else {
+        asset = createAssetInstance(assetId!, tile.x, tile.y, building);
+      }
+
+      asset.userData.building = building;
+      city.addBuilding(building);
 
       setBuilding(asset);
     }
@@ -63,6 +94,7 @@ export const useCityBuildings = () => {
 
     const onMouseMove = (e: MouseEvent) => {
       if (isDragging) {
+        e.stopPropagation();
         setBuildingObject(e);
       }
     };
@@ -72,7 +104,7 @@ export const useCityBuildings = () => {
       setEnablePan(true);
     };
 
-    if (commandId !== "select") {
+    if (commandId !== "select" && city) {
       window.addEventListener("mousedown", onMouseDown);
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("mouseup", onMouseUp);

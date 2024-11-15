@@ -1,4 +1,5 @@
 import { Camera, Mesh, Object3D, Raycaster, Vector2 } from "three";
+import { getLastParentOfObject } from "./game-helper";
 
 export const getSelectedObject = (
   raycaster: Raycaster,
@@ -7,7 +8,7 @@ export const getSelectedObject = (
   camera: Camera,
   canvasWidth: number,
   canvasHeight: number
-): Mesh | null => {
+): Object3D | null => {
   e.stopPropagation();
   const mouse = new Vector2();
   mouse.x = (e.clientX / canvasWidth) * 2 - 1;
@@ -15,9 +16,25 @@ export const getSelectedObject = (
 
   raycaster.setFromCamera(mouse, camera);
 
-  const intersections = raycaster.intersectObjects(objects, false);
+  const allObjects: Object3D[] = [];
+  objects.forEach((obj) => {
+    if (obj instanceof Object3D) {
+      allObjects.push(obj);
+      obj.traverse((child) => {
+        if (child instanceof Mesh) allObjects.push(child);
+      });
+    }
+  });
 
-  if (intersections.length > 0) return intersections[0].object as Mesh;
+  const intersections = raycaster.intersectObjects(allObjects, false);
+
+  if (intersections.length > 0) {
+    const obj = intersections[0].object as Object3D;
+
+    const mainObj = getLastParentOfObject(obj);
+
+    return mainObj;
+  }
 
   return null;
 };
