@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useCity } from "../contexts/city-context";
 import { useCityBuildings } from "../hooks/useCityBuildings";
 import { useFrame } from "@react-three/fiber";
-import { createAssetInstance } from "../assets/assets";
+
 import { Mesh, Object3D } from "three";
+import { cloneMaterials } from "../helpers/game-helper";
 
 const CityBuildings = () => {
   const {
@@ -62,12 +63,19 @@ const CityBuildings = () => {
               objsToRemove.push(oldAsset);
 
               building.updated = false;
-              newAsset = createAssetInstance(
-                building.type,
-                building.x,
-                building.y,
-                building
-              );
+
+              const modelName =
+                building.type + "-" + building.style + building.level;
+
+              const foundModel = models!.filter((m) => m.name === modelName)[0];
+              console.log(foundModel);
+              if (!foundModel) return;
+
+              const newAsset = foundModel.scene.clone();
+              cloneMaterials(newAsset);
+              newAsset.position.set(building.x, 0, building.y);
+
+              console.log(newAsset);
 
               newAsset.userData.building = building;
 

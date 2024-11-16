@@ -1,4 +1,4 @@
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Sky } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 import { useCity } from "../contexts/city-context";
@@ -32,6 +32,7 @@ const MainScene = () => {
       }}
     >
       <Perf />
+      {/* <Sky /> */}
       <OrbitControls
         maxPolarAngle={MAX_CAMERA_ELEVATION}
         minPolarAngle={MIN_CAMERA_ELEVATION}
@@ -51,7 +52,7 @@ const MainScene = () => {
       />
 
       <City />
-      {/* <axesHelper scale={15} /> */}
+      <axesHelper scale={50} />
       <SetupLights />
     </Canvas>
   );

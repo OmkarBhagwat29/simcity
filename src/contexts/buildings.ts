@@ -5,13 +5,25 @@ import { AssetId } from "./city-context";
 import config from "./config";
 import { simulateAdandomentAndRenovate } from "../helpers/zone-helper";
 
+export type Style = "A" | "B" | "C";
+
+const getRandomStyle = (): Style => {
+  const num = Math.floor(3 * Math.random()) + 1;
+
+  if (num === 1) return "A";
+
+  if (num === 2) return "B";
+
+  return "C";
+};
+
 export type Building = {
   readonly x: number;
   readonly y: number;
   readonly name?: string;
   readonly uuid: string;
   readonly type: AssetId;
-  readonly style: number;
+  readonly style: Style;
   readonly maxResidents?: number;
   residents?: Citizen[];
   abandonedTime?: number;
@@ -22,7 +34,7 @@ export type Building = {
   numberOfJobsFilled?: () => number;
   dispose?: () => void;
 
-  height: number;
+  level: number;
   updated: boolean;
 
   update: () => void;
@@ -55,8 +67,8 @@ export const buildingFactory: BuildingFactory = {
     y,
     uuid: crypto.randomUUID(),
     type: "grass",
-    style: Math.floor(3 * Math.random()) + 1,
-    height: 1,
+    style: "A",
+    level: 0,
     updated: false,
     update() {
       this.updated = false;
@@ -68,8 +80,8 @@ export const buildingFactory: BuildingFactory = {
     uuid: crypto.randomUUID(),
     residents: [],
     type: "residential",
-    style: Math.floor(3 * Math.random()) + 1,
-    height: 1,
+    style: getRandomStyle(),
+    level: 0,
     updated: false,
     maxResidents: config.zone.maxResident,
     abandonDays: 0,
@@ -80,14 +92,14 @@ export const buildingFactory: BuildingFactory = {
     goingTobeAbandoned: false,
     update() {
       if (Math.random() < updateSpeed) {
-        if (this.height < 5) {
-          this.height += 1;
+        if (this.level < config.zone.maxLevel) {
+          this.level += 1;
           this.updated = true;
         }
       }
       if (
         Math.random() < config.zone.residentMoveInChance &&
-        this.height > 1 &&
+        this.level > 1 &&
         this.residents!.length < this.maxResidents!
       ) {
         const resident = createCitizen(this);
@@ -104,8 +116,8 @@ export const buildingFactory: BuildingFactory = {
     name: getRandomCompanyName(),
     uuid: crypto.randomUUID(),
     type: "commercial",
-    height: 1,
-    style: Math.floor(3 * Math.random()) + 1,
+    level: 0,
+    style: getRandomStyle(),
     updated: false,
     maxWorkers: 4,
     workers: [],
@@ -117,8 +129,8 @@ export const buildingFactory: BuildingFactory = {
     },
     update() {
       if (Math.random() < updateSpeed) {
-        if (this.height < 5) {
-          this.height += 1;
+        if (this.level < config.zone.maxLevel) {
+          this.level += 1;
           this.updated = true;
         }
       }
@@ -143,8 +155,8 @@ export const buildingFactory: BuildingFactory = {
     name: getRandomCompanyName(),
     uuid: crypto.randomUUID(),
     type: "industrial",
-    height: 1,
-    style: Math.floor(3 * Math.random()) + 1,
+    level: 0,
+    style: getRandomStyle(),
     updated: false,
     maxWorkers: 4,
     workers: [],
@@ -156,8 +168,8 @@ export const buildingFactory: BuildingFactory = {
     },
     update() {
       if (Math.random() < updateSpeed) {
-        if (this.height < 5) {
-          this.height += 1;
+        if (this.level < config.zone.maxLevel) {
+          this.level += 1;
           this.updated = true;
         }
       }
@@ -180,8 +192,8 @@ export const buildingFactory: BuildingFactory = {
     y,
     uuid: crypto.randomUUID(),
     type: "road",
-    height: 0.1,
-    style: Math.floor(3 * Math.random()) + 1,
+    level: 0.1,
+    style: "A",
     updated: false,
     update() {
       this.updated = false;

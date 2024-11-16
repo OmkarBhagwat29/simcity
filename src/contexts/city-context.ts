@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { Mesh, Object3D } from "three";
+import {  Object3D } from "three";
 import { Citizen } from "./citizen";
 import { City } from "./city";
 
@@ -18,6 +18,11 @@ export type CommandId =
   | "industrial"
   | "road"
   | undefined;
+
+export type ModelEntity = {
+  name: string;
+  scene: Object3D;
+};
 
 interface CityContextProps {
   city: City | null;
@@ -38,8 +43,8 @@ interface CityContextProps {
   addCitizens: (citizen: Citizen[]) => void;
   setSelectedObject: (object: Object3D) => void;
   selectedObject: Object3D | null;
-  models: Object3D[] | null;
-  setModels: (models: Object3D[]) => void;
+  models: ModelEntity[] | null;
+  setModels: (models: ModelEntity[]) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({

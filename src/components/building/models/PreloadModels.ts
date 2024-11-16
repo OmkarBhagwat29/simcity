@@ -1,6 +1,10 @@
 import { useGLTF } from "@react-three/drei";
-import { modelPaths } from "./ModelPaths";
+import model from "../../../assets/model";
 
 export const preloadModels = () => {
-  useGLTF.preload(modelPaths["construction-small"]);
+  Object.values(model).forEach((entry) => {
+    if (entry.filename) {
+      useGLTF.preload(`./models/${entry.filename}`);
+    }
+  });
 };

@@ -6,7 +6,8 @@ import { buildingFactory } from "../contexts/buildings";
 import { getSelectedObject } from "../helpers/raycaster-helper";
 
 import { cloneMaterials } from "../helpers/game-helper";
-import { createAssetInstance } from "../assets/assets";
+
+import { createRoad } from "../assets/assets";
 
 function debounce(func: (...args: any[]) => void, delay: number) {
   let timer: NodeJS.Timeout;
@@ -71,11 +72,18 @@ export const useCityBuildings = () => {
       if (assetId !== "road") {
         if (!models) return selectedObject;
 
-        asset = models[0].clone();
+        //find model
+
+        asset = models
+          .filter((m) => m.name === "under-construction")[0]
+          .scene.clone();
+
+        console.log(asset);
+
         asset.position.set(building.x, 0, building.y);
         cloneMaterials(asset);
       } else {
-        asset = createAssetInstance(assetId!, tile.x, tile.y, building);
+        asset = createRoad(tile.x, tile.y);
       }
 
       asset.userData.building = building;
@@ -107,7 +115,7 @@ export const useCityBuildings = () => {
         e.stopPropagation();
         setBuildingObject(e);
       }
-    }, 50);
+    }, 25);
 
     const onMouseUp = () => {
       isDraggingRef.current = false;

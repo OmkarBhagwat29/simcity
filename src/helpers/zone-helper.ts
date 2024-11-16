@@ -32,7 +32,7 @@ export const simulateAdandomentAndRenovate = (
 ) => {
   setRoadAccess(building, city);
   if (!building.hasRoadAccess && !building.abandoned) {
-    if (building.height > 1) {
+    if (building.level > 1) {
       if (Math.random() > config.zone.abandonmentChance) {
         building.goingTobeAbandoned = true;
       }

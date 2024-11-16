@@ -6,7 +6,7 @@ import ResidentialInfo from "./ResidentialInfo";
 export const BuildingInfo = ({ building }: { building: Building }) => (
   <>
     <br />
-    <strong>Building</strong>
+    <strong>Asset</strong>
     <br />
     <strong>Type:</strong> {building.type}
     <br />
@@ -17,7 +17,7 @@ export const BuildingInfo = ({ building }: { building: Building }) => (
     <br />
     <strong>Road Access:</strong> {building.hasRoadAccess ? "Yes" : "No"}
     <br />
-    <strong>Level:</strong> {building.height}
+    <strong>Level:</strong> {building.level}
     <br />
     {building.type === "residential" && <ResidentialInfo building={building} />}
     {(building.type === "commercial" || building.type === "industrial") && (

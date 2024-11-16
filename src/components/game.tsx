@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import CityScene from "./CityScene";
 
-import { AssetId, CityProvider, CommandId } from "../contexts/city-context";
+import {
+  AssetId,
+  CityProvider,
+  CommandId,
+  ModelEntity,
+} from "../contexts/city-context";
 import { Mesh, Object3D } from "three";
 import { Citizen } from "../contexts/citizen";
 import { City } from "../contexts/city";
@@ -20,9 +25,9 @@ const Game = () => {
 
   const [enablePan, setEnablePan] = useState(true);
 
-  const [selectedObject, setSelectedObject] = useState<Mesh | null>(null);
+  const [selectedObject, setSelectedObject] = useState<Object3D | null>(null);
 
-  const [models, setModels] = useState<Object3D[]>([]);
+  const [models, setModels] = useState<ModelEntity[]>([]);
 
   const addBuildingObjects = (objs: Object3D[]) => {
     setBuildingObjects((prv) => [...prv, ...objs]);
@@ -39,12 +44,30 @@ const Game = () => {
     });
   };
 
-  const addModels = (models: Object3D[]) => {
+  const addModels = (models: ModelEntity[]) => {
     setModels(models);
   };
 
   const addCitizens = (newCitizens: Citizen[]) => {
     setCitizens(newCitizens);
+  };
+
+  const LoadingScreen = () => {
+    return (
+      <div
+        style={{
+          color: "white",
+          zIndex: "10",
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          fontSize: "20px",
+          color: "black",
+        }}
+      >
+        Loading...
+      </div>
+    );
   };
 
   return (
@@ -74,8 +97,10 @@ const Game = () => {
           setModels: addModels,
         }}
       >
-        <ModelManager />
-        <CityScene />
+        <Suspense fallback={<LoadingScreen />}>
+          <ModelManager />
+          <CityScene />
+        </Suspense>
       </CityProvider>
     </>
   );
