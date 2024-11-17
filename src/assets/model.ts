@@ -11,7 +11,7 @@ export default {
   },
   "residential-B1": {
     type: "zone",
-    filename: "building-house-family-small.glb",
+    filename: "building-house-family-small.glb", 
   },
   "residential-C1": {
     type: "zone",
