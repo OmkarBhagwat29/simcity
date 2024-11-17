@@ -6,12 +6,12 @@ export default {
   },
   "residential-A1": {
     type: "zone",
-    filename: "cottage.glb", //"building-house-block-big.glb",
+    filename: "cottage.glb",
     scale: [0.085, 0.1, 0.12],
   },
   "residential-B1": {
     type: "zone",
-    filename: "building-house-family-small.glb", 
+    filename: "building-house-family-small.glb",
   },
   "residential-C1": {
     type: "zone",
@@ -35,17 +35,17 @@ export default {
   "residential-A3": {
     type: "zone",
     filename: "residential-A3.glb",
-    scale: [1, 1, 1],
+    scale: [0.8, 0.6, 0.8],
   },
   "residential-B3": {
     type: "zone",
     filename: "residential-B3.glb",
-    scale: [10, 10, 10],
+    scale: [0.8, 0.8, 0.8],
   },
   "residential-C3": {
     type: "zone",
     filename: "residential-C3.glb",
-    scale: [0.75, 1, 0.75],
+    scale: [0.72, 1, 0.72],
   },
   "commercial-A1": {
     type: "zone",

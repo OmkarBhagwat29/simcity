@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import {  Object3D } from "three";
+import { Object3D } from "three";
 import { Citizen } from "./citizen";
 import { City } from "./city";
 
@@ -44,7 +44,7 @@ interface CityContextProps {
   setSelectedObject: (object: Object3D) => void;
   selectedObject: Object3D | null;
   models: ModelEntity[] | null;
-  setModels: (models: ModelEntity[]) => void;
+  addModels: (models: ModelEntity[]) => void;
 }
 
 export const CityContext = createContext<CityContextProps>({
@@ -66,7 +66,7 @@ export const CityContext = createContext<CityContextProps>({
   selectedObject: null,
   setSelectedObject: () => {},
   models: [],
-  setModels: () => {},
+  addModels: () => {},
 });
 
 export const useCity = () => {

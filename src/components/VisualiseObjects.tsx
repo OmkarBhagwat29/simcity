@@ -1,13 +1,13 @@
 import { useCity } from "../contexts/city-context";
-import { Mesh } from "three";
-import { setEmissive } from "../helpers/material-helper";
-import { useEffect, useMemo } from "react";
+import { Mesh, Object3D } from "three";
+import { setEmissive, setObjectEmissive } from "../helpers/material-helper";
+import { useMemo } from "react";
 import config from "../contexts/config";
 import { getLastParentOfObject } from "../helpers/game-helper";
 
 type Selection = {
-  selectedObject: Mesh | null;
-  hoverObject: Mesh | null;
+  selectedObject: Object3D | null;
+  hoverObject: Object3D | null;
 };
 
 const VisualiseObjects = () => {
@@ -23,31 +23,32 @@ const VisualiseObjects = () => {
       return;
     }
 
-    const obj = e.object as Mesh;
     if (selection.selectedObject) {
-      setEmissive(selection.selectedObject, config.selection.baseEmissive);
+      setObjectEmissive(
+        selection.selectedObject,
+        config.selection.baseEmissive
+      );
     }
 
     //select
-    setEmissive(obj, config.selection.selectEmissive);
+    setObjectEmissive(e.object, config.selection.selectEmissive);
 
     if (commandId === "select") {
       const mainObj = getLastParentOfObject(e.object);
       setSelectedObject(mainObj);
     }
 
-    selection.selectedObject = obj;
+    selection.selectedObject = e.object;
   };
 
   const handlePointerOver = (e) => {
     e.stopPropagation();
 
-    const obj = e.object as Mesh;
-    //  / console.log(obj);
-    //hover
-    setEmissive(obj, config.selection.selectEmissive);
+    const mainObj = getLastParentOfObject(e.object);
 
-    selection.hoverObject = obj;
+    setObjectEmissive(mainObj, config.selection.selectEmissive);
+
+    selection.hoverObject = mainObj;
   };
 
   const handlePointerOut = (e) => {
@@ -57,7 +58,7 @@ const VisualiseObjects = () => {
       selection.hoverObject &&
       selection.hoverObject.uuid !== selection.selectedObject?.uuid
     ) {
-      setEmissive(selection.hoverObject, config.selection.baseEmissive);
+      setObjectEmissive(selection.hoverObject, config.selection.baseEmissive);
 
       selection.hoverObject = null;
     }

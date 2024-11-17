@@ -71,7 +71,7 @@ const CityBuildings = () => {
               console.log(foundModel);
               if (!foundModel) return;
 
-              const newAsset = foundModel.scene.clone();
+               newAsset = foundModel.scene.clone();
               cloneMaterials(newAsset);
               newAsset.position.set(building.x, 0, building.y);
 

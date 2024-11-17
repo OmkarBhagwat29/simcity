@@ -21,7 +21,7 @@ function debounce(func: (...args: any[]) => void, delay: number) {
 
 export const useCityBuildings = () => {
   const [building, setBuilding] = useState<Object3D | null>();
-  const { commandId, setEnablePan, assetId, models, city } = useCity();
+  const { commandId, assetId, models, city } = useCity();
   const { raycaster } = useThree();
   const { size, camera, scene } = useThree();
   const isDraggingRef = useRef(false);
@@ -74,11 +74,14 @@ export const useCityBuildings = () => {
 
         //find model
 
-        asset = models
-          .filter((m) => m.name === "under-construction")[0]
-          .scene.clone();
+        asset = models.filter((m) => m.name === "under-construction")[0].scene;
 
-        console.log(asset);
+        if (asset) {
+          asset = asset.clone();
+          //console.log(asset);
+        } else {
+          return null;
+        }
 
         asset.position.set(building.x, 0, building.y);
         cloneMaterials(asset);
@@ -102,11 +105,7 @@ export const useCityBuildings = () => {
         // Left mouse button
         isDraggingRef.current = true;
 
-        const selectedObject = setBuildingObject(e);
-
-        if (selectedObject) {
-          setEnablePan(false);
-        }
+        setBuildingObject(e);
       }
     };
 
@@ -119,8 +118,6 @@ export const useCityBuildings = () => {
 
     const onMouseUp = () => {
       isDraggingRef.current = false;
-
-      setEnablePan(true);
     };
 
     if (commandId !== "select" && city) {
